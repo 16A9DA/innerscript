@@ -1,6 +1,7 @@
 # claude
 CLAUDE.md
 .claude/
+.serena/
 
 # secrets
 .env
