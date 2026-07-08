@@ -1,68 +1,78 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}innerscript{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
+
 <body class="light">
 
-<nav class="nav">
-  <button type="button" class="theme-btn" id="theme-btn" aria-label="Change color theme" title="Change theme">
-    <svg class="ic-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/><path d="M12 8a4 4 0 100 8 4 4 0 000-8z" fill="currentColor" stroke="none"/></svg>
-    <svg class="ic-moon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
-  </button>
+  <nav class="nav">
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="Change color theme" title="Change theme">
+      <svg class="ic-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round">
+        <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4" />
+        <path d="M12 8a4 4 0 100 8 4 4 0 000-8z" fill="currentColor" stroke="none" />
+      </svg>
+      <svg class="ic-moon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" />
+      </svg>
+    </button>
 
-  <a href="{% url 'pages:home' %}" class="logo">
-    <img src="{% static 'img/logo.avif' %}" alt="innerscript" width="28" height="28">
-    <span>innerscript</span>
-  </a>
+    <a href="{% url 'pages:home' %}" class="logo">
+      <img src="{% static 'img/logo.avif' %}" alt="innerscript" width="28" height="28">
+      <span>innerscript</span>
+    </a>
 
-  <div class="nav-links">
-    <a href="{% url 'community:feed' %}">Discuss</a>
-    <a href="{% url 'pages:toolkits' %}">Toolkits</a>
-    <a href="{% url 'pages:initiatives' %}">Initiatives</a>
-    <a href="{% url 'pages:impact' %}">Impact</a>
-  </div>
-  <div class="nav-actions">
-    {% if user.is_authenticated %}
+    <div class="nav-links">
+      <a href="{% url 'community:feed' %}">Discuss</a>
+      <a href="{% url 'pages:toolkits' %}">Toolkits</a>
+      <a href="{% url 'pages:initiatives' %}">Initiatives</a>
+      <a href="{% url 'pages:impact' %}">Impact</a>
+    </div>
+    <div class="nav-actions">
+      {% if user.is_authenticated %}
       <a href="{% url 'community:post_create' %}" class="signin">Share your story</a>
       <a href="{% url 'accounts:profile' user.username %}" class="signin">{{ user.username }}</a>
       <a href="{% url 'account_logout' %}" class="btn">Sign out</a>
-    {% else %}
+      {% else %}
       <a href="{% url 'account_login' %}" class="signin">Sign in</a>
       <a href="{% url 'account_signup' %}" class="btn">Join free</a>
-    {% endif %}
-  </div>
-</nav>
+      {% endif %}
+    </div>
+  </nav>
 
-{% if messages %}
-<ul class="messages">
-  {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-</ul>
-{% endif %}
+  {% if messages %}
+  <ul class="messages">
+    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+  </ul>
+  {% endif %}
 
-{% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 
-<footer class="footer">
-  <a href="{% url 'pages:home' %}" class="logo">
-    <img src="{% static 'img/logo.avif' %}" alt="innerscript" width="22" height="22">
-    <span class="fs-16">innerscript</span>
-  </a>
-  <div class="footer-links">
-    <a href="{% url 'pages:about' %}">About</a>
-    <a href="{% url 'pages:privacy' %}">Privacy</a>
-    <a href="{% url 'pages:about' %}">Contact</a>
-  </div>
-  <div class="copy">innerscript &copy; 2026</div>
-</footer>
+  <footer class="footer">
+    <a href="{% url 'pages:home' %}" class="logo">
+      <img src="{% static 'img/logo.avif' %}" alt="innerscript" width="22" height="22">
+      <span class="fs-16">innerscript</span>
+    </a>
+    <div class="footer-links">
+      <a href="{% url 'pages:about' %}">About</a>
+      <a href="{% url 'pages:privacy' %}">Privacy</a>
+      <a href="{% url 'pages:about' %}">Contact</a>
+    </div>
+    <div class="copy">innerscript &copy; 2025</div>
+  </footer>
 
-<script nonce="{{ request.csp_nonce }}">
-  function setTheme(t){ document.body.classList.remove('light','dark'); document.body.classList.add(t); localStorage.setItem('is-theme', t); }
-  function toggleTheme(){ setTheme(document.body.classList.contains('dark') ? 'light' : 'dark'); }
-  setTheme(localStorage.getItem('is-theme') || 'light');
-  document.getElementById('theme-btn').addEventListener('click', toggleTheme);
-</script>
+  <script nonce="{{ request.csp_nonce }}">
+    function setTheme(t) { document.body.classList.remove('light', 'dark'); document.body.classList.add(t); localStorage.setItem('is-theme', t); }
+    function toggleTheme() { setTheme(document.body.classList.contains('dark') ? 'light' : 'dark'); }
+    setTheme(localStorage.getItem('is-theme') || 'light');
+    document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+  </script>
 </body>
+
 </html>
