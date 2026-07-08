@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% block title %}Join free · innerscript{% endblock %}
+{% block content %}
+<section class="form wrap">
+  <h1 class="h-display">Join the community</h1>
+  <p class="muted-sm mb-20">A place to be heard by people who understand. Takes a minute to join.</p>
+
+  {% get_providers as socialaccount_providers %}
+  {% for provider in socialaccount_providers %}
+    {% if provider.id == "google" %}
+    <a href="{% provider_login_url provider.id %}" class="btn oauth-btn">
+      Continue with Google
+    </a>
+    <div class="or-divider">or with email</div>
+    {% endif %}
+  {% endfor %}
+
+  <form method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {% for field in form %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {{ field.errors }}
+    {% endfor %}
+    {{ form.non_field_errors }}
+    {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">{% endif %}
+    <div class="mt-24"><button type="submit" class="btn btn-lg w-full">Create account</button></div>
+  </form>
+  <p class="muted-sm mt-20">We will send a verification link to your email.</p>
+</section>
+{% endblock %}

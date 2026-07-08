@@ -1,0 +1,33 @@
+# claude
+CLAUDE.md
+.claude/
+
+# secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets*
+*.secret
+
+# planning artifacts
+implementation_plan.md
+task.md
+system_architecture.md
+.cursorrules
+
+# node stack noise
+node_modules/
+dist/
+build/
+.DS_Store
+*.log
+
+# python / django
+__pycache__/
+*.pyc
+.venv/
+db.sqlite3
+media/
+design_ref/

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.username }} · innerscript{% endblock %}
+{% block content %}
+<section class="content wrap">
+  <div class="profile-head">
+    <span class="avatar avatar-lg">
+      {% if profile_user.profile.avatar %}<img src="{{ profile_user.profile.avatar.url }}" alt="">{% else %}{{ profile_user.profile.initial }}{% endif %}
+    </span>
+    <div>
+      <h1 class="name-lg">{{ profile_user.username }}</h1>
+      <span class="muted-sm">{{ profile_user.profile.get_role_display }} · joined {{ profile_user.profile.created|date:"M Y" }}</span>
+    </div>
+    {% if user == profile_user %}<a href="{% url 'accounts:profile_edit' %}" class="btn ml-auto">Edit profile</a>{% endif %}
+  </div>
+  {% if profile_user.profile.bio %}<p>{{ profile_user.profile.bio }}</p>{% endif %}
+
+  <h2>Posts</h2>
+  {% for post in posts %}
+    <div class="list-row">
+      <a href="{{ post.get_absolute_url }}" class="serif post-title">{{ post.title }}</a>
+      <div class="muted-sm">{{ post.get_kind_display }} · Score {{ post.community_score }} · {{ post.created|date:"M j, Y" }}</div>
+    </div>
+  {% empty %}
+    <p class="muted-sm">No posts yet.</p>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Discuss · innerscript{% endblock %}
+{% block content %}
+
+<section class="topics wrap">
+  <span class="topics-label">Topics</span>
+  <div class="chips">
+    <a href="{% url 'community:feed' %}" class="chip {% if not active_cat %}active{% endif %}">All</a>
+    {% for c in categories %}
+      <a href="?cat={{ c.slug }}" class="chip {% if active_cat == c.slug %}active{% endif %}">{{ c.name }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section wrap">
+  <div class="section-head">
+    <h2>{% if active_cat %}{{ active_cat|title }}{% else %}Trending Posts{% endif %}</h2>
+    <div class="sorts">
+      <a href="?{% if active_cat %}cat={{ active_cat }}&{% endif %}sort=score" class="{% if sort == 'score' %}active{% endif %}">Community Score</a>
+      <a href="?{% if active_cat %}cat={{ active_cat }}&{% endif %}sort=recent" class="{% if sort == 'recent' %}active{% endif %}">Recent</a>
+      <a href="?{% if active_cat %}cat={{ active_cat }}&{% endif %}sort=discussed" class="{% if sort == 'discussed' %}active{% endif %}">Most Discussed</a>
+    </div>
+  </div>
+
+  {% if featured %}
+  <a href="{{ featured.get_absolute_url }}" class="featured">
+    <div class="cover">
+      {% if featured.image %}<img src="{{ featured.image.url }}" alt="">{% else %}<span class="muted-sm">cover image</span>{% endif %}
+    </div>
+    <div class="body">
+      <div>
+        <div class="meta">
+          <span class="badge-kind solid">{{ featured.get_kind_display|upper }}</span>
+          <span class="muted-sm">{{ featured.created|date:"M j, Y" }}</span>
+          <span class="score ml-auto">Score {{ featured.community_score }}</span>
+        </div>
+        <h2>{{ featured.title }}</h2>
+        <p>{{ featured.body|truncatewords:32 }}</p>
+      </div>
+      <div class="foot between">
+        <span class="who muted-sm">{{ featured.author.username }} · {{ featured.created|date:"M j" }}</span>
+        <div class="react card-react">
+          <span>&#128172; {{ featured.comment_count }}</span><span>&#10084; {{ featured.like_count }}</span>
+        </div>
+      </div>
+    </div>
+  </a>
+  {% endif %}
+
+  {% if posts %}
+  <div class="post-grid">
+    {% for post in posts %}{% include "community/_postcard.html" %}{% endfor %}
+  </div>
+  {% elif not featured %}
+  <p class="muted-sm">No posts yet. <a href="{% url 'community:post_create' %}" class="link-pink">Share the first story →</a></p>
+  {% endif %}
+</section>
+
+{% endblock %}

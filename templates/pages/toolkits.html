@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Toolkits · innerscript{% endblock %}
+{% block content %}
+<section class="content wrap wrap-wide">
+  <div class="eyebrow-txt">Resources</div>
+  <h1>Evidence-based toolkits.</h1>
+  <p>Practical, research-backed strategies for youth mental health. Free to use and share.</p>
+  <div class="tk-grid">
+    {% for t in toolkits %}
+      <div class="tk">
+        <h3 class="serif">{{ t.title }}</h3>
+        {% if t.topic %}<div class="muted-sm mb-8">{{ t.topic }}</div>{% endif %}
+        <p>{{ t.description }}</p>
+        {% if t.file %}<a href="{{ t.file.url }}" class="link-pink">Download →</a>
+        {% elif t.link %}<a href="{{ t.link }}" class="link-pink">Open →</a>{% endif %}
+      </div>
+    {% empty %}
+      <p class="muted-sm">Toolkits coming soon.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

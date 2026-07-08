@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Sign out · innerscript{% endblock %}
+{% block content %}
+<section class="form wrap">
+  <h1 class="h-display">Sign out</h1>
+  <p class="muted-sm mb-20">Ready to leave? You can sign back in any time.</p>
+
+  {# POST + csrf_token: logout is a state change, must not be a plain GET link (prevents CSRF logout). #}
+  <form method="post" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">{% endif %}
+    <button type="submit" class="btn btn-lg w-full">Sign out</button>
+  </form>
+  <p class="muted-sm mt-20"><a href="{% url 'pages:home' %}" class="link-pink">Back to home</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Delete account · innerscript{% endblock %}
+{% block content %}
+<section class="form wrap">
+  <h1 class="h-display mb-12">Delete your account</h1>
+  <p class="muted-sm mb-24">This permanently removes your account, profile, posts, replies, likes, and Google link. It cannot be undone. There is no retention.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-lg bg-pink">Permanently delete my account</button>
+    <a href="{% url 'accounts:profile_edit' %}" class="link-pink ml-16">Cancel</a>
+  </form>
+</section>
+{% endblock %}

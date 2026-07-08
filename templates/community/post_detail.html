@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} · innerscript{% endblock %}
+{% block content %}
+
+<article class="content wrap">
+  <div class="meta author-row">
+    <span class="badge-kind solid">{{ post.get_kind_display|upper }}</span>
+    {% if post.category %}<span class="muted-sm">{{ post.category.name }}</span>{% endif %}
+    <span class="score ml-auto">Score {{ post.community_score }}</span>
+  </div>
+
+  <h1>{{ post.title }}</h1>
+
+  <div class="author-row-lg">
+    <span class="avatar">
+      {% if post.author.profile.avatar %}<img src="{{ post.author.profile.avatar.url }}" alt="">{% else %}{{ post.author.profile.initial }}{% endif %}
+    </span>
+    <div>
+      <a href="{% url 'accounts:profile' post.author.username %}" class="fw-600">{{ post.author.username }}</a>
+      <span class="muted-sm"> · {{ post.created|date:"M j, Y" }}</span>
+    </div>
+  </div>
+
+  {% if post.image %}<img src="{{ post.image.url }}" alt="" class="post-hero">{% endif %}
+
+  <div class="post-body">{{ post.body }}</div>
+
+  <div class="react-bar">
+    <form method="post" action="{% url 'community:like_toggle' post.slug %}">
+      {% csrf_token %}
+      <button type="submit" class="btn{% if not liked %} like-off{% endif %}">
+        &#10084; {% if liked %}Liked{% else %}Like{% endif %} · {{ post.like_count }}
+      </button>
+    </form>
+    <span class="muted-sm">&#128172; {{ post.comment_count }} replies</span>
+  </div>
+
+  <h2>Replies</h2>
+  {% for c in comments %}
+    <div class="comment">
+      <span class="avatar">
+        {% if c.author.profile.avatar %}<img src="{{ c.author.profile.avatar.url }}" alt="">{% else %}{{ c.author.profile.initial }}{% endif %}
+      </span>
+      <div>
+        <div><a href="{% url 'accounts:profile' c.author.username %}" class="fw-600">{{ c.author.username }}</a> <span class="muted-sm">· {{ c.created|timesince }} ago</span></div>
+        <div class="comment-body">{{ c.body }}</div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted-sm">No replies yet. Be the first to offer support.</p>
+  {% endfor %}
+
+  <div class="form comments-form">
+    {% if user.is_authenticated %}
+      <form method="post">
+        {% csrf_token %}
+        {{ form.body }}
+        {{ form.body.errors }}
+        <div class="mt-12"><button type="submit" class="btn">Post reply</button></div>
+      </form>
+    {% else %}
+      <p class="muted-sm"><a href="{% url 'account_login' %}" class="link-pink">Sign in</a> to join the conversation.</p>
+    {% endif %}
+  </div>
+</article>
+
+{% endblock %}

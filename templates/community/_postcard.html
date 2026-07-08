@@ -1,0 +1,18 @@
+{% load static %}
+<a href="{{ post.get_absolute_url }}" class="card">
+  <div class="thumb">
+    {% if post.image %}<img src="{{ post.image.url }}" alt="">{% else %}<span class="muted-sm">post image</span>{% endif %}
+  </div>
+  <div class="inner">
+    <div class="top">
+      <span class="badge-kind">{{ post.get_kind_display|upper }}</span>
+      <span class="score">Score {{ post.community_score }}</span>
+    </div>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.body|truncatewords:18 }}</p>
+    <div class="foot">
+      <span class="who">{{ post.author.username }} · {{ post.created|timesince }} ago</span>
+      <div class="react"><span>&#128172; {{ post.comment_count }}</span><span>&#10084; {{ post.like_count }}</span></div>
+    </div>
+  </div>
+</a>

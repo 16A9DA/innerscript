@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy · innerscript{% endblock %}
+{% block content %}
+<section class="content wrap">
+  <div class="eyebrow-txt">Privacy</div>
+  <h1>Privacy policy.</h1>
+  <p>innerscript is a youth mental health community. We treat your data with the
+  same care we ask the community to treat each other. This policy describes
+  exactly what we collect, and it matches what the code and database actually do.</p>
+
+  <h2>What we collect</h2>
+  <p>Only two things are required to have an account:</p>
+  <ul>
+    <li>Your name (or a username you choose).</li>
+    <li>Your email address.</li>
+  </ul>
+  <p>When you sign in with Google we receive your name and email. We discard
+  everything else Google sends (profile photo, locale, Google ID payload). We do
+  not store Google access or refresh tokens.</p>
+
+  <h2>What we do not collect</h2>
+  <ul>
+    <li>No profile photos or location from Google.</li>
+    <li>No OAuth tokens retained after sign-in.</li>
+    <li>No tracking or advertising cookies. No third-party analytics.</li>
+    <li>No selling or sharing of personal data with anyone.</li>
+  </ul>
+
+  <h2>What you choose to add</h2>
+  <p>A bio, avatar, and role on your profile are optional and entirely up to you.
+  Posts and replies you write are public to the community. You can edit or remove
+  them at any time.</p>
+
+  <h2>Your rights</h2>
+  <ul>
+    <li>See your data: it is your profile and your posts, visible to you.</li>
+    <li>Delete your account: this permanently removes your account, profile,
+    posts, replies, and Google link, with no soft-delete and no retention.
+    Do it any time from <a href="{% url 'accounts:account_delete' %}" class="link-pink">account deletion</a>.</li>
+  </ul>
+
+  <h2>Security and safety</h2>
+  <p>Passwords are hashed, never stored in plain text. Email verification is
+  required for email signups. This community offers peer support and is not a
+  substitute for professional care. If you are in crisis, contact a local
+  emergency line or a trusted adult immediately.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about your data: innerscript2@gmail.com.</p>
+</section>
+{% endblock %}
