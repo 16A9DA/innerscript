@@ -55,6 +55,7 @@ body.dark {
 body.dark .theme-btn .ic-sun { display: block; }
 body.dark .theme-btn .ic-moon { display: none; }
 .logo { display: flex; align-items: center; gap: 9px; margin-right: 48px; flex-shrink: 0; }
+.logo img { border-radius: 50%; object-fit: cover; }
 .logo span { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; letter-spacing: -.5px; }
 .nav-links { display: flex; gap: 32px; flex: 1; align-items: center; }
 .nav-links a { color: var(--muted); font-size: 14px; font-weight: 500; }

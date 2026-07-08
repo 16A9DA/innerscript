@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}innerscript{% endblock %}</title>
+  <title>{% block title %}InnerScript{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
 
@@ -24,8 +24,8 @@
     </button>
 
     <a href="{% url 'pages:home' %}" class="logo">
-      <img src="{% static 'img/logo.avif' %}" alt="innerscript" width="28" height="28">
-      <span>innerscript</span>
+      <img src="{% static 'img/logo.avif' %}" alt="InnerScript" width="28" height="28">
+      <span>InnerScript</span>
     </a>
 
     <div class="nav-links">
@@ -56,15 +56,15 @@
 
   <footer class="footer">
     <a href="{% url 'pages:home' %}" class="logo">
-      <img src="{% static 'img/logo.avif' %}" alt="innerscript" width="22" height="22">
-      <span class="fs-16">innerscript</span>
+      <img src="{% static 'img/logo.avif' %}" alt="InnerScript" width="22" height="22">
+      <span class="fs-16">InnerScript</span>
     </a>
     <div class="footer-links">
       <a href="{% url 'pages:about' %}">About</a>
       <a href="{% url 'pages:privacy' %}">Privacy</a>
       <a href="{% url 'pages:about' %}">Contact</a>
     </div>
-    <div class="copy">innerscript &copy; 2025</div>
+    <div class="copy">InnerScript &copy; 2025</div>
   </footer>
 
   <script nonce="{{ request.csp_nonce }}">

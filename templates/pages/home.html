@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}innerscript · youth mental health community{% endblock %}
+{% block title %}InnerScript · youth mental health community{% endblock %}
 {% block content %}
 
 <section class="hero wrap">
@@ -9,7 +9,8 @@
         <span>Safe community · 6000+ people reached</span>
       </div>
       <h1>You don't have<br>to face it<br><em>alone.</em></h1>
-      <p>We turn brain science into support you can actually use. Share what you're going through, read what others have been through, and find people who get it. Your voice is safe here.</p>
+      <p>We turn brain science into support you can actually use. Share what you're going through, read what others have
+        been through, and find people who get it. Your voice is safe here.</p>
       <div class="hero-actions">
         <a href="{% url 'community:post_create' %}" class="btn btn-lg">Share your story</a>
         <a href="{% url 'community:feed' %}" class="link-pink">Browse community →</a>
@@ -21,8 +22,14 @@
         <div class="l">People reached</div>
       </div>
       <div class="stats-row">
-        <div class="stat"><div class="n">5+</div><div class="l">Resources shared</div></div>
-        <div class="stat"><div class="n">10+</div><div class="l">Volunteers</div></div>
+        <div class="stat">
+          <div class="n">5+</div>
+          <div class="l">Resources shared</div>
+        </div>
+        <div class="stat">
+          <div class="n">10+</div>
+          <div class="l">Volunteers</div>
+        </div>
       </div>
     </div>
   </div>
@@ -40,7 +47,8 @@
     {% for post in posts %}{% include "community/_postcard.html" %}{% endfor %}
   </div>
   {% else %}
-  <p class="muted-sm">No posts yet. Be the first to <a href="{% url 'community:post_create' %}" class="link-pink">share your story</a>.</p>
+  <p class="muted-sm">No posts yet. Be the first to <a href="{% url 'community:post_create' %}" class="link-pink">share
+      your story</a>.</p>
   {% endif %}
 </section>
 
@@ -54,15 +62,25 @@
   <div class="how-steps">
     <div class="step">
       <div class="num">1</div>
-      <div><div class="t">Every comment is read</div><div class="d">We look at the emotional tone of each reply, whether it is supportive, empathetic, or harmful.</div></div>
+      <div>
+        <div class="t">Every comment is read</div>
+        <div class="d">We look at the emotional tone of each reply, whether it is supportive, empathetic, or harmful.
+        </div>
+      </div>
     </div>
     <div class="step">
       <div class="num">2</div>
-      <div><div class="t">Community Score is calculated</div><div class="d">A score from 0 to 100 reflects how safe and supportive the conversation feels.</div></div>
+      <div>
+        <div class="t">Community Score is calculated</div>
+        <div class="d">A score from 0 to 100 reflects how safe and supportive the conversation feels.</div>
+      </div>
     </div>
     <div class="step">
       <div class="num">3</div>
-      <div><div class="t">High scores rise to the top</div><div class="d">The kindest, most helpful posts show up first, instead of whatever is loudest.</div></div>
+      <div>
+        <div class="t">High scores rise to the top</div>
+        <div class="d">The kindest, most helpful posts show up first, instead of whatever is loudest.</div>
+      </div>
     </div>
   </div>
 </section>
