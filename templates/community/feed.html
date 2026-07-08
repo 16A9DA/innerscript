@@ -33,6 +33,7 @@
       <div>
         <div class="meta">
           <span class="badge-kind solid">{{ featured.get_kind_display|upper }}</span>
+          {% if featured.category %}<span class="cat-pill">{{ featured.category.name }}</span>{% endif %}
           <span class="muted-sm">{{ featured.created|date:"M j, Y" }}</span>
           <span class="score ml-auto">Score {{ featured.community_score }}</span>
         </div>
@@ -40,7 +41,12 @@
         <p>{{ featured.body|truncatewords:32 }}</p>
       </div>
       <div class="foot between">
-        <span class="who muted-sm">{{ featured.author.username }} · {{ featured.created|date:"M j" }}</span>
+        <span class="card-author">
+          <span class="avatar avatar-sm">
+            {% if featured.author.profile.avatar %}<img src="{{ featured.author.profile.avatar.url }}" alt="">{% else %}{{ featured.author.profile.initial }}{% endif %}
+          </span>
+          <span class="who muted-sm">{{ featured.author.username }} · {{ featured.created|date:"M j" }}</span>
+        </span>
         <div class="react card-react">
           <span>&#128172; {{ featured.comment_count }}</span><span>&#10084; {{ featured.like_count }}</span>
         </div>

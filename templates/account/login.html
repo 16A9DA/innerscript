@@ -25,6 +25,7 @@
     {% endfor %}
     {{ form.non_field_errors }}
     {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">{% endif %}
+    <p class="mt-20"><a href="{% url 'account_reset_password' %}" class="link-pink">Forgot password?</a></p>
     <div class="mt-24"><button type="submit" class="btn btn-lg w-full">Sign in</button></div>
   </form>
   <p class="muted-sm mt-20">New here? <a href="{% url 'account_signup' %}" class="link-pink">Join free</a></p>
