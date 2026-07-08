@@ -1,0 +1,16 @@
+.git
+.gitignore
+.venv
+__pycache__/
+*.pyc
+.env
+.env.*
+db.sqlite3
+media/
+staticfiles/
+.DS_Store
+*.log
+.claude/
+CLAUDE.md
+.serena/
+design_ref/

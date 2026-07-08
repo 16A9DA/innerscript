@@ -3,3 +3,5 @@ django-allauth>=65.0
 Pillow>=11.0
 django-csp>=4.0
 python-dotenv>=1.0
+gunicorn>=23.0
+whitenoise>=6.0
