@@ -33,3 +33,6 @@ db.sqlite3
 media/
 staticfiles/
 design_ref/
+
+# graphify knowledge graph output
+graphify-out/

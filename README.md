@@ -1,7 +1,7 @@
 # Innerscript
 
 <p align="center">
-  <img src="img/logo.avif" alt="Innerscript Homepage" width="200">
+  <img src="img/logo.avif" alt="Innerscript Homepage" width="200" style="border-radius:50%">
 </p>
 
 Innerscript is a youth mental health community platform that transforms brain science research into practical tools, workshops, and peer support resources that young people can actually use.
@@ -42,19 +42,23 @@ A supportive space where users can:
 - Write discussions and posts
 - Reply to community members
 - Like and engage with content
+- Attach images to posts (UUID filenames, 5 MB cap, extension whitelist)
+- Keep a profile with bio, avatar, and role
 - Build meaningful conversations
 
 ---
 
-### Community Safety System
+### Community Ranking
 
-Posts are ranked using a community safety approach:
+Posts carry a Community Score. The score is a heuristic on the likes to comments ratio of a post, not sentiment analysis. It powers the default feed order.
 
-1. Comments are analyzed for emotional tone
-2. Conversations receive a Community Score
-3. Supportive and helpful discussions are highlighted
+The feed supports three sort modes via `?sort=`:
 
-The goal is to promote kindness and empathy instead of engagement based only on popularity.
+1. `score` ranks by Community Score
+2. `recent` shows newest first
+3. `discussed` surfaces the most commented threads
+
+Posts come in three kinds (blog, discussion, resource) and can be filed under categories. The goal is to surface supportive, well discussed conversations instead of raw popularity.
 
 
 
