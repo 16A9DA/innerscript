@@ -19,7 +19,7 @@ body.light {
   --nav:#fdf8f5; --card:#fdf8f5;
   --score-bg:#f0fff4; --score-border:#c3e6cd; --score-txt:#2d8a4e;
   --rising-bg:#fff8e6; --rising-border:#f0d070; --rising-txt:#8a6000;
-  --pink:#e8186e; --pink-h:#c90e58;
+  --pink:#f3a5c0; --pink-h:#e97fa5; --on-pink:#4a0f28;
   --th-off-bg:#fce7ef; --th-off-c:#e8186e;
   --th-nv-bg:transparent; --th-nv-c:#9a6878;
 }
@@ -29,7 +29,7 @@ body.dark {
   --nav:#0d1228; --card:#141a35;
   --score-bg:rgba(72,199,142,.1); --score-border:rgba(72,199,142,.25); --score-txt:#48c78e;
   --rising-bg:rgba(251,191,36,.08); --rising-border:rgba(251,191,36,.25); --rising-txt:#fbbf24;
-  --pink:#f0428a; --pink-h:#d42c72;
+  --pink:#f7b8d0; --pink-h:#f090b3; --on-pink:#3a0a1e;
   --th-off-bg:transparent; --th-off-c:#3d4870;
   --th-nv-bg:#1e2a50; --th-nv-c:#8892b8;
 }
@@ -64,11 +64,11 @@ body.dark .theme-btn .ic-moon { display: none; }
 
 /* buttons */
 .btn {
-  background: var(--pink); border: none; color: #fff; font-size: 14px; font-weight: 600;
+  background: var(--pink); border: none; color: var(--on-pink); font-size: 14px; font-weight: 600;
   padding: 10px 24px; border-radius: 4px; cursor: pointer; font-family: 'DM Sans', sans-serif;
   display: inline-block; transition: background .2s, transform .2s, box-shadow .2s;
 }
-.btn:hover { background: var(--pink-h); color: #fff; }
+.btn:hover { background: var(--pink-h); color: var(--on-pink); }
 .btn-lg { font-size: 15px; padding: 15px 34px; }
 .btn-lg:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,24,110,.3); }
 .link-pink { color: var(--pink); font-size: 15px; font-weight: 500; }
@@ -110,7 +110,7 @@ body.dark .theme-btn .ic-moon { display: none; }
 
 /* badges */
 .badge-kind { color: var(--pink); font-size: 10px; font-weight: 700; letter-spacing: .5px; }
-.badge-kind.solid { background: var(--pink); color: #fff; padding: 4px 10px; border-radius: 3px; }
+.badge-kind.solid { background: var(--pink); color: var(--on-pink); padding: 4px 10px; border-radius: 3px; }
 .score { background: var(--score-bg); border: 1px solid var(--score-border); color: var(--score-txt); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; }
 .rising { background: var(--rising-bg); border: 1px solid var(--rising-border); color: var(--rising-txt); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 3px; }
 
@@ -140,7 +140,7 @@ body.dark .theme-btn .ic-moon { display: none; }
 .card .foot .react { display: flex; gap: 8px; color: var(--faint); font-size: 12px; }
 
 /* avatar */
-.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--pink); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--pink); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--on-pink); flex-shrink: 0; }
 .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .avatar-sm { width: 22px; height: 22px; font-size: 10px; }
 
@@ -247,3 +247,11 @@ body.dark .theme-btn .ic-moon { display: none; }
 .comment{display:flex;gap:12px;margin:20px 0}
 .comment-body{color:var(--muted);font-size:15px;line-height:1.6;margin-top:4px;white-space:pre-wrap}
 .comments-form{padding:24px 0 0;max-width:none}
+.contact-list{list-style:none;padding:0;margin:0 0 8px;max-width:520px}
+.contact-list li{display:flex;gap:16px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--border);font-size:16px}
+.contact-label{flex:0 0 96px;color:var(--faint);font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.contact-list a{color:var(--pink);font-weight:500}
+.post-hidden{color:var(--faint);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--border);border-radius:3px;padding:2px 8px;margin-left:8px}
+.vis-form{display:inline}
+.vis-btn{background:none;border:1.5px solid var(--border);color:var(--muted);font-size:12px;padding:5px 12px;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px}
+.vis-btn:hover{border-color:var(--pink);color:var(--pink)}

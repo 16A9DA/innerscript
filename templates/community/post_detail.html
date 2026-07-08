@@ -6,6 +6,7 @@
   <div class="meta author-row">
     <span class="badge-kind solid">{{ post.get_kind_display|upper }}</span>
     {% if post.category %}<span class="muted-sm">{{ post.category.name }}</span>{% endif %}
+    {% if not post.is_public %}<span class="post-hidden">Hidden · only you can see this</span>{% endif %}
     <span class="score ml-auto">Score {{ post.community_score }}</span>
   </div>
 
@@ -32,6 +33,7 @@
         &#10084; {% if liked %}Liked{% else %}Like{% endif %} · {{ post.like_count }}
       </button>
     </form>
+    <button type="button" class="btn like-off" id="shareBtn" data-url="{{ request.build_absolute_uri }}">&#128279; Share</button>
     <span class="muted-sm">&#128172; {{ post.comment_count }} replies</span>
   </div>
 
@@ -63,5 +65,14 @@
     {% endif %}
   </div>
 </article>
+
+<script nonce="{{ request.csp_nonce }}">
+  var sb = document.getElementById('shareBtn');
+  if (sb) sb.addEventListener('click', function () {
+    var url = this.dataset.url, btn = this;
+    if (navigator.share) { navigator.share({ title: document.title, url: url }).catch(function () {}); }
+    else if (navigator.clipboard) { navigator.clipboard.writeText(url).then(function () { btn.textContent = 'Link copied'; }); }
+  });
+</script>
 
 {% endblock %}

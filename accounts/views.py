@@ -9,9 +9,12 @@ User = get_user_model()
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
+    posts = user.posts.select_related("category")
+    if request.user != user:
+        posts = posts.filter(is_public=True)
     return render(request, "accounts/profile.html", {
         "profile_user": user,
-        "posts": user.posts.select_related("category"),
+        "posts": posts,
     })
 
 

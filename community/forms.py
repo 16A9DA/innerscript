@@ -8,7 +8,7 @@ from .models import Comment, Post
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["kind", "category", "title", "body", "image"]
+        fields = ["kind", "category", "title", "body", "image", "is_public"]
 
     def clean_image(self):
         return validate_image(self.cleaned_data.get("image"))

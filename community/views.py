@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
@@ -7,8 +9,22 @@ from .forms import CommentForm, PostForm
 from .models import Category, Like, Post
 
 
+def _safe_next(request, fallback):
+    ref = request.META.get("HTTP_REFERER", "")
+    if ref and url_has_allowed_host_and_scheme(
+        ref, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ):
+        return redirect(ref)
+    return redirect(fallback)
+
+
 def feed(request):
-    posts = list(Post.objects.select_related("author", "category"))
+    qs = Post.objects.select_related("author", "category")
+    if request.user.is_authenticated:
+        qs = qs.filter(Q(is_public=True) | Q(author=request.user))
+    else:
+        qs = qs.filter(is_public=True)
+    posts = list(qs)
     sort = request.GET.get("sort", "score")
     cat = request.GET.get("cat")
     if cat:
@@ -32,6 +48,8 @@ def feed(request):
 
 def post_detail(request, slug):
     post = get_object_or_404(Post.objects.select_related("author", "category"), slug=slug)
+    if not post.is_public and post.author != request.user:
+        raise Http404
     form = CommentForm(request.POST or None)
     if request.method == "POST":
         if not request.user.is_authenticated:
@@ -72,10 +90,13 @@ def like_toggle(request, slug):
     like, created = Like.objects.get_or_create(post=post, user=request.user)
     if not created:
         like.delete()
-    # Only follow the referer if it is same-origin, else it is an open redirect.
-    referer = request.META.get("HTTP_REFERER", "")
-    if referer and url_has_allowed_host_and_scheme(
-        referer, allowed_hosts={request.get_host()}, require_https=request.is_secure()
-    ):
-        return redirect(referer)
-    return redirect(post.get_absolute_url())
+    return _safe_next(request, post.get_absolute_url())
+
+
+@require_POST
+@login_required
+def visibility_toggle(request, slug):
+    post = get_object_or_404(Post, slug=slug, author=request.user)
+    post.is_public = not post.is_public
+    post.save(update_fields=["is_public"])
+    return _safe_next(request, post.get_absolute_url())

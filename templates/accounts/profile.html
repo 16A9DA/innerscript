@@ -17,8 +17,14 @@
   <h2>Posts</h2>
   {% for post in posts %}
     <div class="list-row">
-      <a href="{{ post.get_absolute_url }}" class="serif post-title">{{ post.title }}</a>
+      <a href="{{ post.get_absolute_url }}" class="serif post-title">{{ post.title }}</a>{% if not post.is_public %}<span class="post-hidden">Hidden</span>{% endif %}
       <div class="muted-sm">{{ post.get_kind_display }} · Score {{ post.community_score }} · {{ post.created|date:"M j, Y" }}</div>
+      {% if user == profile_user %}
+        <form method="post" action="{% url 'community:visibility_toggle' post.slug %}" class="vis-form">
+          {% csrf_token %}
+          <button type="submit" class="vis-btn">{% if post.is_public %}Hide{% else %}Make public{% endif %}</button>
+        </form>
+      {% endif %}
     </div>
   {% empty %}
     <p class="muted-sm">No posts yet.</p>

@@ -41,6 +41,9 @@ class Post(models.Model):
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     body = models.TextField()
     image = models.ImageField(upload_to=post_image_path, blank=True)
+    is_public = models.BooleanField(
+        default=True, help_text="Uncheck to hide this post from the public feed. Only you can see hidden posts."
+    )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

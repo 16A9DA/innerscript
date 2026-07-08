@@ -9,4 +9,5 @@ urlpatterns = [
     path("new/", views.post_create, name="post_create"),
     path("p/<slug:slug>/", views.post_detail, name="post_detail"),
     path("p/<slug:slug>/like/", views.like_toggle, name="like_toggle"),
+    path("p/<slug:slug>/visibility/", views.visibility_toggle, name="visibility_toggle"),
 ]
