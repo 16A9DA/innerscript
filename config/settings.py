@@ -186,6 +186,8 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_ADAPTER = "accounts.adapter.MinimalSocialAccountAdapter"
 SOCIALACCOUNT_STORE_TOKENS = False
 SOCIALACCOUNT_QUERY_EMAIL = True
+# Google signup must stop to pick a username; allauth enforces uniqueness on submit.
+SOCIALACCOUNT_AUTO_SIGNUP = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

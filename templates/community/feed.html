@@ -7,7 +7,7 @@
   <div class="chips">
     <a href="{% url 'community:feed' %}" class="chip {% if not active_cat %}active{% endif %}">All</a>
     {% for c in categories %}
-      <a href="?cat={{ c.slug }}" class="chip {% if active_cat == c.slug %}active{% endif %}">{{ c.name }}</a>
+      <a href="?cat={{ c.slug }}" class="chip {% if active_cat == c.slug %}active{% endif %}" title="{{ c.description }}">{{ c.name }}</a>
     {% endfor %}
   </div>
 </section>
@@ -16,13 +16,14 @@
 
 <section class="section wrap">
   <div class="section-head">
-    <h2>{% if active_cat %}{{ active_cat|title }}{% else %}Trending Posts{% endif %}</h2>
+    <h2>{% if active_category %}{{ active_category.name }}{% else %}Trending Posts{% endif %}</h2>
     <div class="sorts">
       <a href="?{% if active_cat %}cat={{ active_cat }}&{% endif %}sort=score" class="{% if sort == 'score' %}active{% endif %}">Community Score</a>
       <a href="?{% if active_cat %}cat={{ active_cat }}&{% endif %}sort=recent" class="{% if sort == 'recent' %}active{% endif %}">Recent</a>
       <a href="?{% if active_cat %}cat={{ active_cat }}&{% endif %}sort=discussed" class="{% if sort == 'discussed' %}active{% endif %}">Most Discussed</a>
     </div>
   </div>
+  {% if active_category.description %}<p class="muted-sm mb-20">{{ active_category.description }}</p>{% endif %}
 
   {% if featured %}
   <a href="{{ featured.get_absolute_url }}" class="featured">

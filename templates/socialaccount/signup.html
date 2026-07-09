@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Choose a username · InnerScript{% endblock %}
+{% block content %}
+<section class="form wrap">
+  <h1 class="h-display">Choose a username</h1>
+  <p class="muted-sm mb-20">Pick a username to finish setting up your account. It must be unique.</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {{ field.errors }}
+    {% endfor %}
+    {{ form.non_field_errors }}
+    {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">{% endif %}
+    <div class="mt-24"><button type="submit" class="btn btn-lg w-full">Continue</button></div>
+  </form>
+</section>
+{% endblock %}

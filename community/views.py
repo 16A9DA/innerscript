@@ -43,6 +43,7 @@ def feed(request):
         "categories": Category.objects.all(),
         "sort": sort,
         "active_cat": cat,
+        "active_category": Category.objects.filter(slug=cat).first() if cat else None,
     })
 
 
