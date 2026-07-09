@@ -5,6 +5,8 @@
   <h1 class="h-display mb-24">Edit profile</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <label>Email</label>
+    <p class="muted-sm mb-20">{{ request.user.email }}</p>
     {% for field in form %}
       <label for="{{ field.id_for_label }}">{{ field.label }}</label>
       {{ field }}

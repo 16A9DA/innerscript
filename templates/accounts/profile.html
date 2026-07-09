@@ -9,6 +9,7 @@
     <div>
       <h1 class="name-lg">{{ profile_user.username }}</h1>
       <span class="muted-sm">{{ profile_user.profile.get_role_display }} · joined {{ profile_user.profile.created|date:"M Y" }}</span>
+      {% if profile_user == request.user %}<span class="muted-sm">{{ profile_user.email }}</span>{% endif %}
     </div>
     {% if user == profile_user %}<a href="{% url 'accounts:profile_edit' %}" class="btn ml-auto">Edit profile</a>{% endif %}
   </div>

@@ -24,7 +24,7 @@ def profile_edit(request):
     form = ProfileForm(request.POST or None, request.FILES or None, instance=prof)
     if request.method == "POST" and form.is_valid():
         form.save()
-        return redirect("accounts:profile", username=request.user.username)
+        return redirect("accounts:profile", username=form.cleaned_data["username"])
     return render(request, "accounts/profile_edit.html", {"form": form})
 
 
