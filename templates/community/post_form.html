@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Share your story · InnerScript{% endblock %}
+{% block title %}Start a discussion · InnerScript{% endblock %}
 {% block content %}
 <section class="form wrap">
   <div class="eyebrow-txt">New post</div>
-  <h1 class="h-display">Share your story</h1>
-  <p class="muted-sm mb-12">Write as much or as little as you want. You can post under a username if that feels safer.</p>
+  <h1 class="h-display">Start a discussion</h1>
+  <p class="muted-sm mb-12">Share an idea, question, article, or resource. You can post under a username if you prefer.</p>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}

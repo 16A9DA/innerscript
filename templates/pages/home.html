@@ -6,14 +6,14 @@
   <div class="hero-grid">
     <div>
       <div class="eyebrow">
-        <span>Safe community · 6000+ people reached</span>
+        <span>Evidence-based mental health education · 6000+ people reached</span>
       </div>
-      <h1>You don't have<br>to face it<br><em>alone.</em></h1>
-      <p>We turn brain science into support you can actually use. Share what you're going through, read what others have
-        been through, and find people who get it. Your voice is safe here.</p>
+      <h1>Mental health<br>knowledge made<br><em>practical.</em></h1>
+      <p>Discover research-backed insights, educational resources, and practical tools designed to help you better
+        understand the mind and everyday wellbeing.</p>
       <div class="hero-actions">
-        <a href="{% url 'community:post_create' %}" class="btn btn-lg">Share your story</a>
-        <a href="{% url 'community:feed' %}" class="link-pink">Browse community →</a>
+        <a href="{% url 'community:feed' %}" class="btn btn-lg">Explore resources</a>
+        <a href="{% url 'pages:toolkits' %}" class="link-pink">Browse toolkits →</a>
       </div>
     </div>
     <div class="stats">
@@ -47,8 +47,8 @@
     {% for post in posts %}{% include "community/_postcard.html" %}{% endfor %}
   </div>
   {% else %}
-  <p class="muted-sm">No posts yet. Be the first to <a href="{% url 'community:post_create' %}" class="link-pink">share
-      your story</a>.</p>
+  <p class="muted-sm">No discussions yet. Be the first to <a href="{% url 'community:post_create' %}" class="link-pink">start
+      a discussion</a>.</p>
   {% endif %}
 </section>
 
@@ -88,10 +88,10 @@
 <section class="crisis wrap">
   <div class="crisis-box">
     <div>
-      <h2>Struggling right now?<br>You don't have to wait.</h2>
-      <p>Connect with people who understand. Find support, friendship, and hope.</p>
+      <h2>Need help right now?<br>You don't have to wait.</h2>
+      <p>If you are in crisis, reach a trained professional. Contact a local emergency line or a crisis helpline immediately.</p>
     </div>
-    <a href="https://discord.gg/Gh2E39kkK" class="btn btn-lg">Talk to someone now</a>
+    <a href="https://discord.gg/Gh2E39kkK" class="btn btn-lg">Find a helpline</a>
   </div>
 </section>
 

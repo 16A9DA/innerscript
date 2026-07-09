@@ -36,7 +36,7 @@
     </div>
     <div class="nav-actions">
       {% if user.is_authenticated %}
-      <a href="{% url 'community:post_create' %}" class="signin">Share your story</a>
+      <a href="{% url 'community:post_create' %}" class="signin">Start a discussion</a>
       <a href="{% url 'accounts:profile' user.username %}" class="signin">{{ user.username }}</a>
       <a href="{% url 'account_logout' %}" class="btn">Sign out</a>
       {% else %}
