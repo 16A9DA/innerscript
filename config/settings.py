@@ -149,34 +149,16 @@ LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# Mail backend, first match wins:
-#  1. Resend HTTP API when RESEND_API_KEY is set. Needed on hosts (e.g. Render)
-#     that block outbound SMTP ports; sends over HTTPS instead.
-#  2. Real SMTP when EMAIL_HOST_USER is set (e.g. Gmail app password).
-#  3. Console backend prints links to the terminal for local dev.
-if os.environ.get("RESEND_API_KEY"):
-    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
-    ANYMAIL = {"RESEND_API_KEY": os.environ["RESEND_API_KEY"]}
-elif os.environ.get("SENDGRID_API_KEY"):
-    # SendGrid single-sender: no DNS needed, but From must be the verified
-    # sender address. Also HTTPS, so it works on SMTP-blocked hosts.
+# Mail backend: SendGrid HTTP API when SENDGRID_API_KEY is set (works on hosts
+# like Render that block outbound SMTP), else the console backend prints links
+# to the terminal for local dev.
+if os.environ.get("SENDGRID_API_KEY"):
+    # From must be a SendGrid-verified sender address.
     EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
     ANYMAIL = {"SENDGRID_API_KEY": os.environ["SENDGRID_API_KEY"]}
-elif os.environ.get("EMAIL_HOST_USER"):
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
-    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
-    # .get avoids a boot-time KeyError if the password var is missing.
-    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-    # Gmail rejects fast; don't let a hung connection tie up a worker.
-    EMAIL_TIMEOUT = 10
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 ACCOUNT_ADAPTER = "accounts.adapter.LoggingAccountAdapter"
-# Resend's shared sender (onboarding@resend.dev) needs no DNS. Swap to a
-# verified domain address once innerscript.org DNS is set up.
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", "InnerScript <no-reply@innerscript.org>"
 )

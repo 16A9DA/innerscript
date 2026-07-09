@@ -10,13 +10,12 @@ class AccountsConfig(AppConfig):
     name = "accounts"
 
     def ready(self):
-        # Surface the active email backend on boot so a missing EMAIL_HOST_USER
+        # Surface the active email backend on boot so a missing SENDGRID_API_KEY
         # (which silently falls back to the console backend) is obvious in logs.
         backend = settings.EMAIL_BACKEND
-        logger.info("Email backend: %s (host user: %s)", backend,
-                    settings.EMAIL_HOST_USER or "<unset>")
+        logger.info("Email backend: %s", backend)
         if not settings.DEBUG and "console" in backend:
             logger.warning(
                 "Console email backend in production: mail will NOT be "
-                "delivered. Set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD."
+                "delivered. Set SENDGRID_API_KEY."
             )
