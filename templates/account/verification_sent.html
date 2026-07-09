@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Verify your email · InnerScript{% endblock %}
+{% block content %}
+<section class="form wrap">
+  <h1 class="h-display">Check your inbox</h1>
+  <p class="muted-sm mb-20">We sent a verification link to your email. Follow it to finish signing up.</p>
+  <p class="muted-sm">No email after a few minutes? Check your spam folder, or <a href="{% url 'account_signup' %}" class="link-pink">try again</a>.</p>
+  <p class="mt-20"><a href="{% url 'account_login' %}" class="link-pink">Back to sign in</a></p>
+</section>
+{% endblock %}
