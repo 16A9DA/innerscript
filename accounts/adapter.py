@@ -1,4 +1,25 @@
+import logging
+
+from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+
+logger = logging.getLogger(__name__)
+
+
+class LoggingAccountAdapter(DefaultAccountAdapter):
+    """Never let a mail-server failure become a 500.
+
+    Signup verification and password reset send mail synchronously; if SMTP
+    is down or rejects auth, allauth would bubble the exception into a 500
+    (blank error page). We log the real cause and continue so the user sees
+    the normal flow instead of a crash.
+    """
+
+    def send_mail(self, template_prefix, email, context):
+        try:
+            super().send_mail(template_prefix, email, context)
+        except Exception:
+            logger.exception("Email send failed for %s (%s)", email, template_prefix)
 
 
 class MinimalSocialAccountAdapter(DefaultSocialAccountAdapter):

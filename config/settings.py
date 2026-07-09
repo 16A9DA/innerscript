@@ -157,9 +157,13 @@ if os.environ.get("EMAIL_HOST_USER"):
     EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
-    EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
+    # .get avoids a boot-time KeyError if the password var is missing.
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+    # Gmail rejects fast; don't let a hung connection tie up a worker.
+    EMAIL_TIMEOUT = 10
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+ACCOUNT_ADAPTER = "accounts.adapter.LoggingAccountAdapter"
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", "InnerScript <no-reply@innerscript.org>"
 )
@@ -246,5 +250,7 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
         "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
+        # Surfaces caught email-send failures in the server log.
+        "accounts": {"handlers": ["console"], "level": "INFO", "propagate": False},
     },
 }
