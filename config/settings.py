@@ -157,6 +157,11 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 if os.environ.get("RESEND_API_KEY"):
     EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
     ANYMAIL = {"RESEND_API_KEY": os.environ["RESEND_API_KEY"]}
+elif os.environ.get("SENDGRID_API_KEY"):
+    # SendGrid single-sender: no DNS needed, but From must be the verified
+    # sender address. Also HTTPS, so it works on SMTP-blocked hosts.
+    EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+    ANYMAIL = {"SENDGRID_API_KEY": os.environ["SENDGRID_API_KEY"]}
 elif os.environ.get("EMAIL_HOST_USER"):
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
