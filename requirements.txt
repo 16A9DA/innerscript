@@ -3,6 +3,7 @@ django-allauth==65.18.0
 PyJWT[crypto]==2.10.1
 Pillow==11.3.0
 django-axes==8.3.1
+django-anymail[resend]==15.0
 django-csp==4.0
 djangorestframework==3.17.1
 dj-database-url==3.1.2
