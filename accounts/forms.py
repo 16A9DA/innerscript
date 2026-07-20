@@ -1,3 +1,5 @@
+from allauth.account.forms import SignupForm as AllauthSignupForm
+from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -6,6 +8,33 @@ from config.uploads import validate_image
 from .models import Profile
 
 User = get_user_model()
+
+
+class RoleFieldMixin(forms.Form):
+    role = forms.ChoiceField(
+        choices=[("", "Select one")] + Profile.ROLE_CHOICES,
+        label="I am a...",
+    )
+
+    def clean_role(self):
+        role = self.cleaned_data["role"]
+        if not role:
+            raise forms.ValidationError("Please select a role.")
+        return role
+
+    def save(self, request):
+        user = super().save(request)
+        user.profile.role = self.cleaned_data["role"]
+        user.profile.save(update_fields=["role"])
+        return user
+
+
+class SignupForm(RoleFieldMixin, AllauthSignupForm):
+    field_order = ["email", "username", "role", "password1", "password2"]
+
+
+class SocialSignupForm(RoleFieldMixin, AllauthSocialSignupForm):
+    field_order = ["email", "username", "role"]
 
 
 class ProfileForm(forms.ModelForm):

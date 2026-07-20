@@ -8,17 +8,23 @@ from config.uploads import avatar_path
 
 class Profile(models.Model):
     ROLE_CHOICES = [
-        ("youth", "Youth"),
+        ("student", "Student"),
+        ("young_adult", "Young Adult"),
+        ("parent", "Parent"),
+        ("caregiver", "Caregiver"),
         ("educator", "Educator"),
-        ("clinician", "Clinician"),
-        ("supporter", "Supporter"),
+        ("mental_health_professional", "Mental Health Professional"),
+        ("healthcare_professional", "Healthcare Professional"),
+        ("researcher", "Researcher"),
+        ("advocate", "Advocate"),
+        ("other", "Other"),
     ]
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
     )
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to=avatar_path, blank=True)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="youth")
+    role = models.CharField(max_length=30, choices=ROLE_CHOICES, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

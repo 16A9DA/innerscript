@@ -35,3 +35,26 @@ def post_image_path(instance, filename):
 
 def avatar_path(instance, filename):
     return _random_path("avatars", filename)
+
+
+ALLOWED_PDF_EXTS = {".pdf"}
+MAX_PDF_BYTES = 20 * 1024 * 1024  # 20 MB
+
+
+def validate_pdf(f):
+    """Reject uploads that are too large or not a PDF."""
+    if f is None:
+        return f
+    if f.size > MAX_PDF_BYTES:
+        raise ValidationError("PDF too large (max 20 MB).")
+    if Path(f.name).suffix.lower() not in ALLOWED_PDF_EXTS:
+        raise ValidationError("Unsupported file type (PDF only).")
+    return f
+
+
+def toolkit_pdf_path(instance, filename):
+    return _random_path("toolkits", filename)
+
+
+def toolkit_preview_path(instance, filename):
+    return _random_path("toolkit_previews", filename)

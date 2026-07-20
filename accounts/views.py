@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 
+from config.permissions import is_admin
 from .forms import ProfileForm
 
 User = get_user_model()
@@ -15,6 +17,7 @@ def profile(request, username):
     return render(request, "accounts/profile.html", {
         "profile_user": user,
         "posts": posts,
+        "is_admin": is_admin(request.user),
     })
 
 
@@ -39,3 +42,17 @@ def account_delete(request):
         user.delete()
         return redirect("pages:home")
     return render(request, "accounts/account_delete.html")
+
+
+@login_required
+def admin_user_delete(request, username):
+    """Admin-only. Self-delete stays on the account_delete route."""
+    if not is_admin(request.user):
+        raise PermissionDenied
+    target = get_object_or_404(User, username=username)
+    if target == request.user:
+        raise PermissionDenied
+    if request.method == "POST":
+        target.delete()
+        return redirect("community:feed")
+    return render(request, "accounts/user_confirm_delete.html", {"target": target})

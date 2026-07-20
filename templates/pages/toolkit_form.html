@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Share an Insight · InnerScript{% endblock %}
+{% block title %}Upload a toolkit · InnerScript{% endblock %}
 {% block content %}
 <section class="form wrap">
-  <div class="eyebrow-txt">New post</div>
-  <h1 class="h-display">Share an Insight</h1>
-  <p class="muted-sm mb-12">Share an idea, question, article, or resource. You can post under a username if you prefer.</p>
+  <div class="eyebrow-txt">New toolkit</div>
+  <h1 class="h-display">Upload a toolkit</h1>
+  <p class="muted-sm mb-12">PDF only, up to 20 MB. Goes live after admin review.</p>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -14,7 +14,7 @@
       {{ field.errors }}
       {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
     {% endfor %}
-    <div class="mt-24"><button type="submit" class="btn btn-lg">Publish</button></div>
+    <div class="mt-24"><button type="submit" class="btn btn-lg">Submit for review</button></div>
   </form>
 </section>
 {% endblock %}

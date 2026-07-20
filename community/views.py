@@ -1,10 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
+from config.permissions import is_admin
 from .forms import CommentForm, PostForm
 from .models import Category, Like, Post
 
@@ -27,12 +29,16 @@ def feed(request):
     posts = list(qs)
     sort = request.GET.get("sort", "score")
     cat = request.GET.get("cat")
+    audience = request.GET.get("audience")
     if cat:
         posts = [p for p in posts if p.category and p.category.slug == cat]
+    if audience == "team":
+        posts = [p for p in posts if p.author.is_staff]
+    elif audience == "professional":
+        professional_roles = {"mental_health_professional", "healthcare_professional"}
+        posts = [p for p in posts if p.author.profile.role in professional_roles]
     if sort == "recent":
         posts.sort(key=lambda p: p.created, reverse=True)
-    elif sort == "discussed":
-        posts.sort(key=lambda p: p.comment_count, reverse=True)
     else:
         posts.sort(key=lambda p: p.community_score, reverse=True)
     featured = posts[0] if posts else None
@@ -43,6 +49,7 @@ def feed(request):
         "categories": Category.objects.all(),
         "sort": sort,
         "active_cat": cat,
+        "active_audience": audience,
         "active_category": Category.objects.filter(slug=cat).first() if cat else None,
     })
 
@@ -70,6 +77,7 @@ def post_detail(request, slug):
         "comments": post.comments.select_related("author"),
         "form": form,
         "liked": liked,
+        "is_admin": is_admin(request.user),
     })
 
 
@@ -101,3 +109,15 @@ def visibility_toggle(request, slug):
     post.is_public = not post.is_public
     post.save(update_fields=["is_public"])
     return _safe_next(request, post.get_absolute_url())
+
+
+@login_required
+def post_delete(request, slug):
+    """Admin-only. No soft-delete, no retention."""
+    if not is_admin(request.user):
+        raise PermissionDenied
+    post = get_object_or_404(Post, slug=slug)
+    if request.method == "POST":
+        post.delete()
+        return redirect("community:feed")
+    return render(request, "community/post_confirm_delete.html", {"post": post})

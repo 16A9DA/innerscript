@@ -42,7 +42,9 @@ class Post(models.Model):
     body = models.TextField()
     image = models.ImageField(upload_to=post_image_path, blank=True)
     is_public = models.BooleanField(
-        default=True, help_text="Uncheck to hide this post from the public feed. Only you can see hidden posts."
+        default=True,
+        verbose_name="Is Public",
+        help_text="This post is visible to everyone. Turn this off to keep it private.",
     )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

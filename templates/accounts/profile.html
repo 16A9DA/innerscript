@@ -12,6 +12,7 @@
       {% if profile_user == request.user %}<span class="muted-sm">{{ profile_user.email }}</span>{% endif %}
     </div>
     {% if user == profile_user %}<a href="{% url 'accounts:profile_edit' %}" class="btn ml-auto">Edit profile</a>{% endif %}
+    {% if is_admin and profile_user != user %}<a href="{% url 'accounts:admin_user_delete' profile_user.username %}" class="link-pink ml-16">Delete account</a>{% endif %}
   </div>
   {% if profile_user.profile.bio %}<p>{{ profile_user.profile.bio }}</p>{% endif %}
 

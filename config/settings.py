@@ -21,6 +21,11 @@ CSRF_TRUSTED_ORIGINS = [
     o for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o
 ]
 
+# Site-role email lists (separate from Django is_staff/is_superuser): gate
+# toolkit uploads/approval and admin-only delete actions.
+ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get("ADMIN_EMAILS", "").split(",") if e.strip()}
+MEMBER_EMAILS = {e.strip().lower() for e in os.environ.get("MEMBER_EMAILS", "").split(",") if e.strip()} | ADMIN_EMAILS
+
 # Render injects the external hostname; trust it automatically on deploy.
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
@@ -149,6 +154,9 @@ LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_PREVENT_ENUMERATION = False
+ACCOUNT_FORMS = {"signup": "accounts.forms.SignupForm"}
+SOCIALACCOUNT_FORMS = {"signup": "accounts.forms.SocialSignupForm"}
 # Mail backend: SendGrid HTTP API when SENDGRID_API_KEY is set (works on hosts
 # like Render that block outbound SMTP), else the console backend prints links
 # to the terminal for local dev.

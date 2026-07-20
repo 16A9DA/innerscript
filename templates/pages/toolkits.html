@@ -5,9 +5,11 @@
   <div class="eyebrow-txt">Resources</div>
   <h1>Evidence-based toolkits.</h1>
   <p>Practical, research-backed strategies for youth mental health. Free to use and share.</p>
+  {% if can_upload %}<a href="{% url 'pages:toolkit_upload' %}" class="btn mb-20">Upload a toolkit</a>{% endif %}
   <div class="tk-grid">
     {% for t in toolkits %}
       <div class="tk">
+        {% if t.preview_image %}<img src="{{ t.preview_image.url }}" alt="" class="tk-preview">{% endif %}
         <h3 class="serif">{{ t.title }}</h3>
         {% if t.topic %}<div class="muted-sm mb-8">{{ t.topic }}</div>{% endif %}
         <p>{{ t.description }}</p>
@@ -18,5 +20,24 @@
       <p class="muted-sm">Toolkits coming soon.</p>
     {% endfor %}
   </div>
+
+  {% if is_admin and pending %}
+  <h2 class="mt-24">Pending review</h2>
+  <div class="tk-grid">
+    {% for t in pending %}
+      <div class="tk">
+        {% if t.preview_image %}<img src="{{ t.preview_image.url }}" alt="" class="tk-preview">{% endif %}
+        <h3 class="serif">{{ t.title }}</h3>
+        <p>{{ t.description }}</p>
+        <div class="muted-sm mb-8">Uploaded by {{ t.uploaded_by }}</div>
+        <a href="{{ t.file.url }}" class="link-pink">Preview PDF →</a>
+        <form method="post" action="{% url 'pages:toolkit_approve' t.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn">Approve</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 </section>
 {% endblock %}

@@ -2,6 +2,7 @@ Django==6.0.2
 django-allauth==65.18.0
 PyJWT[crypto]==2.10.1
 Pillow==11.3.0
+PyMuPDF==1.24.14
 django-axes==8.3.1
 django-anymail[sendgrid]==15.0
 django-csp==4.0
