@@ -83,3 +83,15 @@ class SignupRoleTests(TestCase):
         self._post(role="researcher")
         user = User.objects.get(username="newperson")
         self.assertEqual(user.profile.role, "researcher")
+
+
+@override_settings(ACCOUNT_RATE_LIMITS=False)  # isolate axes; allauth has its own separate limiter
+class LoginRateLimitTests(TestCase):
+    def setUp(self):
+        User.objects.create_user("victim", "victim@x.com", "correct-pw")
+
+    def test_locked_out_after_repeated_failures(self):
+        for _ in range(5):
+            self.client.post(reverse("account_login"), {"login": "victim@x.com", "password": "wrong"})
+        resp = self.client.post(reverse("account_login"), {"login": "victim@x.com", "password": "correct-pw"})
+        self.assertContains(resp, "Account locked", status_code=429)

@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "axes",
     # local
     "accounts",
     "community",
@@ -68,6 +70,8 @@ MIDDLEWARE = [
     # Emits Permissions-Policy and strips version-disclosure headers.
     "config.middleware.SecurityHeadersMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    # Must be last: locks out an IP/username pair after repeated failed logins.
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -146,11 +150,18 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Auth / allauth
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = [
+    # Must be first: checks lockout before any real auth backend runs.
+    "axes.backends.AxesStandaloneBackend",
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+# Login rate limiting: lock an IP+username pair after 5 failed attempts for 15 min.
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = timedelta(minutes=15)
+AXES_RESET_ON_SUCCESS = True
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
