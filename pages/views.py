@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from community.models import Post
-from config.permissions import is_admin, is_member
+from config.permissions import is_member
 from .forms import ToolkitForm
 from .models import Toolkit
 
@@ -24,12 +24,12 @@ def initiatives(request):
 
 
 def toolkits(request):
-    admin = is_admin(request.user)
+    member = is_member(request.user)
     return render(request, "pages/toolkits.html", {
         "toolkits": Toolkit.objects.filter(is_approved=True),
-        "pending": Toolkit.objects.filter(is_approved=False) if admin else None,
-        "can_upload": is_member(request.user),
-        "is_admin": admin,
+        "pending": Toolkit.objects.filter(is_approved=False) if member else None,
+        "can_upload": member,
+        "can_moderate": member,
     })
 
 
@@ -50,11 +50,22 @@ def toolkit_upload(request):
 @require_POST
 @login_required
 def toolkit_approve(request, pk):
-    if not is_admin(request.user):
+    if not is_member(request.user):
         raise PermissionDenied
     toolkit = get_object_or_404(Toolkit, pk=pk)
     toolkit.is_approved = True
     toolkit.save(update_fields=["is_approved"])
+    return redirect("pages:toolkits")
+
+
+@require_POST
+@login_required
+def toolkit_delete(request, pk):
+    """Member-or-admin. No soft-delete, no retention."""
+    if not is_member(request.user):
+        raise PermissionDenied
+    toolkit = get_object_or_404(Toolkit, pk=pk)
+    toolkit.delete()
     return redirect("pages:toolkits")
 
 

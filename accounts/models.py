@@ -25,6 +25,8 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to=avatar_path, blank=True)
     role = models.CharField(max_length=30, choices=ROLE_CHOICES, blank=True)
+    workos_user_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    site_role = models.CharField(max_length=10, blank=True, default="")
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

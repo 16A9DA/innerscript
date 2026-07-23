@@ -10,12 +10,5 @@ class AccountsConfig(AppConfig):
     name = "accounts"
 
     def ready(self):
-        # Surface the active email backend on boot so a missing SENDGRID_API_KEY
-        # (which silently falls back to the console backend) is obvious in logs.
-        backend = settings.EMAIL_BACKEND
-        logger.info("Email backend: %s", backend)
-        if not settings.DEBUG and "console" in backend:
-            logger.warning(
-                "Console email backend in production: mail will NOT be "
-                "delivered. Set SENDGRID_API_KEY."
-            )
+        if not (settings.WORKOS_API_KEY and settings.WORKOS_CLIENT_ID):
+            logger.warning("WORKOS_API_KEY/WORKOS_CLIENT_ID missing: login will fail.")

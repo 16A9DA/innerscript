@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,8 +25,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Site-role email lists (separate from Django is_staff/is_superuser): gate
 # toolkit uploads/approval and admin-only delete actions.
-ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get("ADMIN_EMAILS", "").split(",") if e.strip()}
-MEMBER_EMAILS = {e.strip().lower() for e in os.environ.get("MEMBER_EMAILS", "").split(",") if e.strip()} | ADMIN_EMAILS
 
 # Render injects the external hostname; trust it automatically on deploy.
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
@@ -44,10 +43,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     # third party
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
     "axes",
     # local
     "accounts",
@@ -63,13 +58,13 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "accounts.middleware.ProfileCompletionMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # Emits Content-Security-Policy with a per-request nonce for scripts.
     "csp.middleware.CSPMiddleware",
     # Emits Permissions-Policy and strips version-disclosure headers.
     "config.middleware.SecurityHeadersMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
     # Must be last: locks out an IP/username pair after repeated failed logins.
     "axes.middleware.AxesMiddleware",
 ]
@@ -98,10 +93,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=600
+    )
 }
 
 
@@ -147,66 +141,25 @@ STORAGES = {
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Auth / allauth
-SITE_ID = 1
+# Auth / WorkOS AuthKit
 AUTHENTICATION_BACKENDS = [
     # Must be first: checks lockout before any real auth backend runs.
     "axes.backends.AxesStandaloneBackend",
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-# Login rate limiting: lock an IP+username pair after 5 failed attempts for 15 min.
+# Login rate limiting (protects the Django /admin/ password login).
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = timedelta(minutes=15)
 AXES_RESET_ON_SUCCESS = True
-ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_PREVENT_ENUMERATION = False
-ACCOUNT_FORMS = {"signup": "accounts.forms.SignupForm"}
-SOCIALACCOUNT_FORMS = {"signup": "accounts.forms.SocialSignupForm"}
-# Mail backend: SendGrid HTTP API when SENDGRID_API_KEY is set (works on hosts
-# like Render that block outbound SMTP), else the console backend prints links
-# to the terminal for local dev.
-if os.environ.get("SENDGRID_API_KEY"):
-    # From must be a SendGrid-verified sender address.
-    EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
-    ANYMAIL = {"SENDGRID_API_KEY": os.environ["SENDGRID_API_KEY"]}
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-ACCOUNT_ADAPTER = "accounts.adapter.LoggingAccountAdapter"
-DEFAULT_FROM_EMAIL = os.environ.get(
-    "DEFAULT_FROM_EMAIL", "InnerScript <no-reply@innerscript.org>"
+
+WORKOS_API_KEY = os.environ["WORKOS_API_KEY"]
+WORKOS_CLIENT_ID = os.environ["WORKOS_CLIENT_ID"]
+WORKOS_REDIRECT_URI = os.environ.get(
+    "WORKOS_REDIRECT_URI", "http://localhost:8000/accounts/callback/"
 )
-
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {"access_type": "online"},
-        # Verified Google emails skip the email-verification step.
-        "EMAIL_AUTHENTICATION": True,
-    }
-}
-# With both env credentials set, the Google button works without an admin SocialApp.
-if os.environ.get("GOOGLE_CLIENT_ID") and os.environ.get("GOOGLE_CLIENT_SECRET"):
-    SOCIALACCOUNT_PROVIDERS["google"]["APPS"] = [{
-        "client_id": os.environ["GOOGLE_CLIENT_ID"],
-        "secret": os.environ["GOOGLE_CLIENT_SECRET"],
-        "key": "",
-    }]
-# Google supplies a verified email, so social signups are trusted.
-SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
-SOCIALACCOUNT_LOGIN_ON_GET = True
-
-# Data minimization: keep only name + email, never OAuth tokens (see accounts.adapter).
-SOCIALACCOUNT_ADAPTER = "accounts.adapter.MinimalSocialAccountAdapter"
-SOCIALACCOUNT_STORE_TOKENS = False
-SOCIALACCOUNT_QUERY_EMAIL = True
-# Google signup must stop to pick a username; allauth enforces uniqueness on submit.
-SOCIALACCOUNT_AUTO_SIGNUP = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -257,16 +210,13 @@ CONTENT_SECURITY_POLICY = {
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
 
-# Throttle failed logins against brute force.
-ACCOUNT_RATE_LIMITS = {"login_failed": "5/5m"}
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
         "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
-        # Surfaces caught email-send failures in the server log.
+        # Surfaces caught WorkOS API failures (e.g. delete_user) in the server log.
         "accounts": {"handlers": ["console"], "level": "INFO", "propagate": False},
     },
 }

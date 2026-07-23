@@ -8,7 +8,7 @@ from django.views.decorators.http import require_POST
 
 from config.permissions import is_admin
 from .forms import CommentForm, PostForm
-from .models import Category, Like, Post
+from .models import Category, Comment, Like, Post
 
 
 def _safe_next(request, fallback):
@@ -121,3 +121,15 @@ def post_delete(request, slug):
         post.delete()
         return redirect("community:feed")
     return render(request, "community/post_confirm_delete.html", {"post": post})
+
+
+@require_POST
+@login_required
+def comment_delete(request, pk):
+    """Admin-only. No soft-delete, no retention."""
+    if not is_admin(request.user):
+        raise PermissionDenied
+    comment = get_object_or_404(Comment, pk=pk)
+    post = comment.post
+    comment.delete()
+    return _safe_next(request, post.get_absolute_url())

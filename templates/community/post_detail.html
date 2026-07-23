@@ -52,7 +52,14 @@
         {% if c.author.profile.avatar %}<img src="{{ c.author.profile.avatar.url }}" alt="">{% else %}{{ c.author.profile.initial }}{% endif %}
       </span>
       <div>
-        <div><a href="{% url 'accounts:profile' c.author.username %}" class="fw-600">{{ c.author.username }}</a> <span class="muted-sm">· {{ c.created|timesince }} ago</span></div>
+        <div><a href="{% url 'accounts:profile' c.author.username %}" class="fw-600">{{ c.author.username }}</a> <span class="muted-sm">· {{ c.created|timesince }} ago</span>
+          {% if is_admin %}
+          <form method="post" action="{% url 'community:comment_delete' c.pk %}" class="inline-form">
+            {% csrf_token %}
+            <button type="submit" class="link-pink ml-16">Delete</button>
+          </form>
+          {% endif %}
+        </div>
         <div class="comment-body">{{ c.body }}</div>
       </div>
     </div>

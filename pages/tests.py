@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 
 from config.permissions import is_admin, is_member
@@ -16,11 +16,14 @@ def _one_page_pdf_bytes():
     return doc.tobytes()
 
 
-@override_settings(ADMIN_EMAILS={"admin@x.com"}, MEMBER_EMAILS={"member@x.com", "admin@x.com"})
 class PermissionTests(TestCase):
     def test_is_admin_is_member(self):
         admin = User.objects.create_user("admin", "admin@x.com", "pw")
+        admin.profile.site_role = "admin"
+        admin.profile.save(update_fields=["site_role"])
         member = User.objects.create_user("member", "member@x.com", "pw")
+        member.profile.site_role = "member"
+        member.profile.save(update_fields=["site_role"])
         regular = User.objects.create_user("regular", "reg@x.com", "pw")
         self.assertTrue(is_admin(admin))
         self.assertTrue(is_member(admin))
@@ -30,11 +33,15 @@ class PermissionTests(TestCase):
         self.assertFalse(is_member(regular))
 
 
-@override_settings(ADMIN_EMAILS={"admin@x.com"}, MEMBER_EMAILS={"member@x.com", "admin@x.com"})
 class ToolkitUploadTests(TestCase):
     def setUp(self):
         self.member = User.objects.create_user("member", "member@x.com", "pw")
+        self.member.profile.role = "student"
+        self.member.profile.site_role = "member"
+        self.member.profile.save(update_fields=["role", "site_role"])
         self.regular = User.objects.create_user("regular", "reg@x.com", "pw")
+        self.regular.profile.role = "student"
+        self.regular.profile.save(update_fields=["role"])
         self.pdf = SimpleUploadedFile("guide.pdf", _one_page_pdf_bytes(), content_type="application/pdf")
 
     def _post(self):
@@ -55,14 +62,21 @@ class ToolkitUploadTests(TestCase):
         self.assertNotIn(toolkit, Toolkit.objects.filter(is_approved=True))
 
 
-@override_settings(ADMIN_EMAILS={"admin@x.com"}, MEMBER_EMAILS={"admin@x.com"})
 class ToolkitApproveTests(TestCase):
     def setUp(self):
         self.admin = User.objects.create_user("admin", "admin@x.com", "pw")
+        self.admin.profile.site_role = "admin"
+        self.admin.profile.save(update_fields=["site_role"])
+        self.member = User.objects.create_user("member", "member@x.com", "pw")
+        self.member.profile.role = "student"
+        self.member.profile.site_role = "member"
+        self.member.profile.save(update_fields=["role", "site_role"])
         self.regular = User.objects.create_user("regular", "reg@x.com", "pw")
+        self.regular.profile.role = "student"
+        self.regular.profile.save(update_fields=["role"])
         self.toolkit = Toolkit.objects.create(title="Pending", description="x")
 
-    def test_non_admin_forbidden(self):
+    def test_non_member_forbidden(self):
         self.client.force_login(self.regular)
         resp = self.client.post(reverse("pages:toolkit_approve", args=[self.toolkit.pk]))
         self.assertEqual(resp.status_code, 403)
@@ -72,3 +86,32 @@ class ToolkitApproveTests(TestCase):
         self.client.post(reverse("pages:toolkit_approve", args=[self.toolkit.pk]))
         self.toolkit.refresh_from_db()
         self.assertTrue(self.toolkit.is_approved)
+
+    def test_member_approve(self):
+        self.client.force_login(self.member)
+        self.client.post(reverse("pages:toolkit_approve", args=[self.toolkit.pk]))
+        self.toolkit.refresh_from_db()
+        self.assertTrue(self.toolkit.is_approved)
+
+
+class ToolkitDeleteTests(TestCase):
+    def setUp(self):
+        self.member = User.objects.create_user("member", "member@x.com", "pw")
+        self.member.profile.role = "student"
+        self.member.profile.site_role = "member"
+        self.member.profile.save(update_fields=["role", "site_role"])
+        self.regular = User.objects.create_user("regular", "reg@x.com", "pw")
+        self.regular.profile.role = "student"
+        self.regular.profile.save(update_fields=["role"])
+        self.toolkit = Toolkit.objects.create(title="Guide", description="x")
+
+    def test_non_member_forbidden(self):
+        self.client.force_login(self.regular)
+        resp = self.client.post(reverse("pages:toolkit_delete", args=[self.toolkit.pk]))
+        self.assertEqual(resp.status_code, 403)
+        self.assertTrue(Toolkit.objects.filter(pk=self.toolkit.pk).exists())
+
+    def test_member_delete(self):
+        self.client.force_login(self.member)
+        self.client.post(reverse("pages:toolkit_delete", args=[self.toolkit.pk]))
+        self.assertFalse(Toolkit.objects.filter(pk=self.toolkit.pk).exists())

@@ -1,17 +1,20 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 
-from .models import Post
+from .models import Comment, Post
 
 User = get_user_model()
 
 
-@override_settings(ADMIN_EMAILS={"admin@x.com"}, MEMBER_EMAILS={"admin@x.com"})
 class PostDeleteTests(TestCase):
     def setUp(self):
         self.admin = User.objects.create_user("admin", "admin@x.com", "pw")
+        self.admin.profile.site_role = "admin"
+        self.admin.profile.save(update_fields=["site_role"])
         self.author = User.objects.create_user("author", "author@x.com", "pw")
+        self.author.profile.role = "student"
+        self.author.profile.save(update_fields=["role"])
         self.post = Post.objects.create(author=self.author, title="X", body="x")
 
     def test_non_admin_forbidden(self):
@@ -24,6 +27,29 @@ class PostDeleteTests(TestCase):
         self.client.force_login(self.admin)
         self.client.post(reverse("community:post_delete", args=[self.post.slug]))
         self.assertFalse(Post.objects.filter(pk=self.post.pk).exists())
+
+
+class CommentDeleteTests(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_user("admin", "admin@x.com", "pw")
+        self.admin.profile.site_role = "admin"
+        self.admin.profile.save(update_fields=["site_role"])
+        self.author = User.objects.create_user("author", "author@x.com", "pw")
+        self.author.profile.role = "student"
+        self.author.profile.save(update_fields=["role"])
+        self.post = Post.objects.create(author=self.author, title="X", body="x")
+        self.comment = Comment.objects.create(post=self.post, author=self.author, body="hi")
+
+    def test_non_admin_forbidden(self):
+        self.client.force_login(self.author)
+        resp = self.client.post(reverse("community:comment_delete", args=[self.comment.pk]))
+        self.assertEqual(resp.status_code, 403)
+        self.assertTrue(Comment.objects.filter(pk=self.comment.pk).exists())
+
+    def test_admin_deletes(self):
+        self.client.force_login(self.admin)
+        self.client.post(reverse("community:comment_delete", args=[self.comment.pk]))
+        self.assertFalse(Comment.objects.filter(pk=self.comment.pk).exists())
 
 
 class FeedAudienceFilterTests(TestCase):

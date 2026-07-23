@@ -25,7 +25,7 @@ Innerscript works to close the gap between neuroscience research and everyday li
 
 ### Authentication
 
-- Google OAuth login and email signup
+- WorkOS AuthKit hosted login and signup (email or social)
 - Email verification
 - Django sessions
 - Privacy-focused handling of user data
@@ -52,14 +52,14 @@ Anxiety coping strategies, journaling techniques, breathing exercises, stress ma
 
 ### Privacy
 
-Innerscript collects only a name or username and an email address. It does not store Google profile photos, OAuth tokens, location data, ad trackers, or third-party analytics. Users can view their data, edit their profile, and delete their account permanently.
+Innerscript collects only a name or username and an email address. It does not store profile photos, OAuth tokens, location data, ad trackers, or third-party analytics. Users can view their data, edit their profile, and delete their account permanently.
 
 
 ## Requirements
 
 Runtime dependencies are pinned in `requirements.txt`:
 
-- Django 6.0 and django-allauth for auth
+- Django 6.0 and workos for auth
 - Pillow for image handling
 - django-csp and django-axes for security
 - djangorestframework
@@ -70,7 +70,7 @@ Runtime dependencies are pinned in `requirements.txt`:
 
 ## Install
 
-You need Python 3.12 and a `.env` file at the repo root. Set `DJANGO_SECRET_KEY` at a minimum. For local dev set `DJANGO_DEBUG=1`. Google login needs `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+You need Python 3.12 and a `.env` file at the repo root. Set `DJANGO_SECRET_KEY`, `WORKOS_API_KEY`, and `WORKOS_CLIENT_ID` at a minimum. For local dev set `DJANGO_DEBUG=1`. Set `DATABASE_URL` to run against Postgres instead of the SQLite default.
 
 ```bash
 pip install -r requirements.txt
@@ -79,7 +79,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Email verification links print to the console in dev. Swap `EMAIL_BACKEND` to SMTP for production.
+Signup, login, email verification, and password reset are all handled by WorkOS AuthKit's hosted page; register your redirect URIs in the WorkOS Dashboard before testing login.
 
 
 ## Docker
