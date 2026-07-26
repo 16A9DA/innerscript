@@ -46,6 +46,11 @@ class Post(models.Model):
         verbose_name="Is Public",
         help_text="This post is visible to everyone. Turn this off to keep it private.",
     )
+    is_anonymous = models.BooleanField(
+        default=False,
+        verbose_name="Post anonymously",
+        help_text="Hide your username and avatar on this post.",
+    )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

@@ -20,10 +20,12 @@ def profile(request, username):
     posts = user.posts.select_related("category")
     if request.user != user:
         posts = posts.filter(is_public=True)
+    edit_form = ProfileForm(instance=user.profile) if request.user == user else None
     return render(request, "accounts/profile.html", {
         "profile_user": user,
         "posts": posts,
         "is_admin": is_admin(request.user),
+        "edit_form": edit_form,
     })
 
 

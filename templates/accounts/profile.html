@@ -2,19 +2,40 @@
 {% block title %}{{ profile_user.username }} · InnerScript{% endblock %}
 {% block content %}
 <section class="content wrap">
-  <div class="profile-head">
-    <span class="avatar avatar-lg">
-      {% if profile_user.profile.avatar %}<img src="{{ profile_user.profile.avatar.url }}" alt="">{% else %}{{ profile_user.profile.initial }}{% endif %}
-    </span>
-    <div>
-      <h1 class="name-lg">{{ profile_user.username }}</h1>
-      <span class="muted-sm">{{ profile_user.profile.get_role_display }} · joined {{ profile_user.profile.created|date:"M Y" }}</span>
-      {% if profile_user == request.user %}<span class="muted-sm">{{ profile_user.email }}</span>{% endif %}
+  {% if user == profile_user %}<input type="checkbox" id="edit-toggle" class="edit-toggle-cb">{% endif %}
+  <div class="profile-view">
+    <div class="profile-head">
+      <span class="avatar avatar-lg">
+        {% if profile_user.profile.avatar %}<img src="{{ profile_user.profile.avatar.url }}" alt="">{% else %}{{ profile_user.profile.initial }}{% endif %}
+      </span>
+      <div>
+        <h1 class="name-lg">{{ profile_user.username }}</h1>
+        <span class="muted-sm">{{ profile_user.profile.get_role_display }} · joined {{ profile_user.profile.created|date:"M Y" }}</span>
+        {% if profile_user == request.user %}<span class="muted-sm">{{ profile_user.email }}</span>{% endif %}
+      </div>
+      {% if user == profile_user %}<label for="edit-toggle" class="btn ml-auto">Edit profile</label>{% endif %}
+      {% if is_admin and profile_user != user %}<a href="{% url 'accounts:admin_user_delete' profile_user.username %}" class="link-pink ml-16">Delete account</a>{% endif %}
     </div>
-    {% if user == profile_user %}<a href="{% url 'accounts:profile_edit' %}" class="btn ml-auto">Edit profile</a>{% endif %}
-    {% if is_admin and profile_user != user %}<a href="{% url 'accounts:admin_user_delete' profile_user.username %}" class="link-pink ml-16">Delete account</a>{% endif %}
+    {% if profile_user.profile.bio %}<p>{{ profile_user.profile.bio }}</p>{% endif %}
   </div>
-  {% if profile_user.profile.bio %}<p>{{ profile_user.profile.bio }}</p>{% endif %}
+  {% if user == profile_user %}
+  <div class="profile-edit-inline form">
+    <form method="post" action="{% url 'accounts:profile_edit' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label>Email</label>
+      <p class="muted-sm mb-8">{{ request.user.email }}</p>
+      {% for field in edit_form %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {{ field.errors }}
+      {% endfor %}
+      <div class="mt-24">
+        <button type="submit" class="btn btn-lg">Save</button>
+        <label for="edit-toggle" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+  {% endif %}
 
   <h2>Posts</h2>
   {% for post in posts %}

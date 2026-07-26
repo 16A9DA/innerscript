@@ -28,15 +28,14 @@ def toolkits(request):
     return render(request, "pages/toolkits.html", {
         "toolkits": Toolkit.objects.filter(is_approved=True),
         "pending": Toolkit.objects.filter(is_approved=False) if member else None,
-        "can_upload": member,
+        "can_upload": request.user.is_authenticated,
         "can_moderate": member,
     })
 
 
 @login_required
 def toolkit_upload(request):
-    if not is_member(request.user):
-        raise PermissionDenied
+    """Any signed-in user may submit a toolkit; it stays pending until a member/admin approves it."""
     form = ToolkitForm(request.POST or None, request.FILES or None)
     if request.method == "POST" and form.is_valid():
         toolkit = form.save(commit=False)

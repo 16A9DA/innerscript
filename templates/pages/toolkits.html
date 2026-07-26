@@ -16,10 +16,13 @@
         {% if t.file %}<a href="{{ t.file.url }}" class="link-pink">Download →</a>
         {% elif t.link %}<a href="{{ t.link }}" class="link-pink">Open →</a>{% endif %}
         {% if can_moderate %}
-        <form method="post" action="{% url 'pages:toolkit_delete' t.pk %}">
-          {% csrf_token %}
-          <button type="submit" class="link-pink">Delete</button>
-        </form>
+        <details class="tk-manage">
+          <summary>Manage</summary>
+          <form method="post" action="{% url 'pages:toolkit_delete' t.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Delete</button>
+          </form>
+        </details>
         {% endif %}
       </div>
     {% empty %}
@@ -37,14 +40,17 @@
         <p>{{ t.description }}</p>
         <div class="muted-sm mb-8">Uploaded by {{ t.uploaded_by }}</div>
         <a href="{{ t.file.url }}" class="link-pink">Preview PDF →</a>
-        <form method="post" action="{% url 'pages:toolkit_approve' t.pk %}">
-          {% csrf_token %}
-          <button type="submit" class="btn">Approve</button>
-        </form>
-        <form method="post" action="{% url 'pages:toolkit_delete' t.pk %}">
-          {% csrf_token %}
-          <button type="submit" class="link-pink">Delete</button>
-        </form>
+        <details class="tk-manage">
+          <summary>Manage</summary>
+          <form method="post" action="{% url 'pages:toolkit_approve' t.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Approve</button>
+          </form>
+          <form method="post" action="{% url 'pages:toolkit_delete' t.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Delete</button>
+          </form>
+        </details>
       </div>
     {% endfor %}
   </div>

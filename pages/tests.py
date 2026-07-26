@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from config.permissions import is_admin, is_member
@@ -32,6 +32,12 @@ class PermissionTests(TestCase):
         self.assertFalse(is_admin(regular))
         self.assertFalse(is_member(regular))
 
+    @override_settings(SUPERADMIN_EMAILS={"boss@x.com"})
+    def test_superadmin_email_override(self):
+        boss = User.objects.create_user("boss", "boss@x.com", "pw")
+        self.assertTrue(is_admin(boss))
+        self.assertTrue(is_member(boss))
+
 
 class ToolkitUploadTests(TestCase):
     def setUp(self):
@@ -49,9 +55,18 @@ class ToolkitUploadTests(TestCase):
             "title": "Coping Guide", "description": "x", "topic": "", "file": self.pdf,
         })
 
-    def test_non_member_forbidden(self):
+    def test_anonymous_forbidden(self):
+        resp = self._post()
+        self.assertEqual(resp.status_code, 302)
+        self.assertFalse(Toolkit.objects.filter(title="Coping Guide").exists())
+
+    def test_regular_user_upload_pending_with_preview(self):
         self.client.force_login(self.regular)
-        self.assertEqual(self._post().status_code, 403)
+        self._post()
+        toolkit = Toolkit.objects.get(title="Coping Guide")
+        self.assertFalse(toolkit.is_approved)
+        self.assertTrue(toolkit.preview_image)
+        self.assertNotIn(toolkit, Toolkit.objects.filter(is_approved=True))
 
     def test_member_upload_pending_with_preview(self):
         self.client.force_login(self.member)

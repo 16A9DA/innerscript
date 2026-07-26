@@ -8,7 +8,10 @@ from .models import Comment, Post
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["category", "title", "body", "image", "is_public"]
+        fields = ["kind", "category", "title", "body", "image", "is_anonymous"]
+        widgets = {
+            "is_anonymous": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+        }
 
     def clean_image(self):
         return validate_image(self.cleaned_data.get("image"))

@@ -4,17 +4,34 @@
 <section class="form wrap">
   <div class="eyebrow-txt">New post</div>
   <h1 class="h-display">Share an Insight</h1>
-  <p class="muted-sm mb-12">Share an idea, question, article, or resource. You can post under a username if you prefer.</p>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for field in form %}
-      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {{ field }}
-      {{ field.errors }}
-      {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
-    {% endfor %}
-    <div class="mt-24"><button type="submit" class="btn btn-lg">Publish</button></div>
-  </form>
+  <p class="muted-sm mb-12">Share an idea, question, article, or resource. Post anonymously any time you'd rather not use your username.</p>
+  <div class="post-form-card">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        {% if field.name == "is_anonymous" %}
+          <label class="toggle-row">
+            <span>{{ field.label }}</span>
+            <span class="toggle">{{ field }}<span class="toggle-track"><span class="toggle-thumb"></span></span></span>
+          </label>
+          {{ field.errors }}
+        {% elif field.name == "image" %}
+          <label for="{{ field.id_for_label }}" class="file-drop">
+            <span class="file-drop-fab"><span class="upload-icon"></span></span>
+            <span class="file-drop-text">Add an image</span>
+            {{ field }}
+          </label>
+          {{ field.errors }}
+        {% else %}
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {{ field.errors }}
+          {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+        {% endif %}
+      {% endfor %}
+      <div class="mt-24"><button type="submit" class="btn btn-lg">Publish</button></div>
+    </form>
+  </div>
 </section>
 {% endblock %}

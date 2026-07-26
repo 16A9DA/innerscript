@@ -161,6 +161,11 @@ WORKOS_REDIRECT_URI = os.environ.get(
     "WORKOS_REDIRECT_URI", "http://localhost:8000/accounts/callback/"
 )
 
+# Emails granted admin rights (delete any post/toolkit) regardless of WorkOS site_role.
+SUPERADMIN_EMAILS = {
+    e.strip().lower() for e in os.environ.get("SUPERADMIN_EMAILS", "").split(",") if e.strip()
+}
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 

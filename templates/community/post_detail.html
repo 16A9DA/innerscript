@@ -14,13 +14,21 @@
   <h1>{{ post.title }}</h1>
 
   <div class="author-row-lg">
-    <span class="avatar">
-      {% if post.author.profile.avatar %}<img src="{{ post.author.profile.avatar.url }}" alt="">{% else %}{{ post.author.profile.initial }}{% endif %}
-    </span>
-    <div>
-      <a href="{% url 'accounts:profile' post.author.username %}" class="fw-600">{{ post.author.username }}</a>
-      <span class="muted-sm"> · {{ post.created|date:"M j, Y" }}</span>
-    </div>
+    {% if post.is_anonymous %}
+      <span class="avatar avatar-anon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.87 19.87 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a19.86 19.86 0 0 1-2.16 3.19M1 1l22 22"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/></svg></span>
+      <div>
+        <span class="fw-600">Anonymous</span>
+        <span class="muted-sm"> · {{ post.created|date:"M j, Y" }}</span>
+      </div>
+    {% else %}
+      <span class="avatar">
+        {% if post.author.profile.avatar %}<img src="{{ post.author.profile.avatar.url }}" alt="">{% else %}{{ post.author.profile.initial }}{% endif %}
+      </span>
+      <div>
+        <a href="{% url 'accounts:profile' post.author.username %}" class="fw-600">{{ post.author.username }}</a>
+        <span class="muted-sm"> · {{ post.created|date:"M j, Y" }}</span>
+      </div>
+    {% endif %}
   </div>
 
   {% if post.image %}<img src="{{ post.image.url }}" alt="" class="post-hero">{% endif %}

@@ -7,3 +7,4 @@ class ToolkitForm(forms.ModelForm):
     class Meta:
         model = Toolkit
         fields = ["title", "description", "topic", "file"]
+        labels = {"title": "Name"}

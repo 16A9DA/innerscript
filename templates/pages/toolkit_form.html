@@ -5,16 +5,26 @@
   <div class="eyebrow-txt">New toolkit</div>
   <h1 class="h-display">Upload a toolkit</h1>
   <p class="muted-sm mb-12">PDF only, up to 20 MB. Goes live after admin review.</p>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for field in form %}
-      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {{ field }}
-      {{ field.errors }}
-      {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
-    {% endfor %}
-    <div class="mt-24"><button type="submit" class="btn btn-lg">Submit for review</button></div>
-  </form>
+  <div class="post-form-card">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label for="{{ form.file.id_for_label }}" class="file-drop">
+        <span class="file-drop-fab"><span class="upload-icon"></span></span>
+        <span class="file-drop-text">Choose PDF</span>
+        {{ form.file }}
+      </label>
+      {{ form.file.errors }}
+      {% for field in form %}
+        {% if field.name != "file" %}
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {{ field.errors }}
+          {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+        {% endif %}
+      {% endfor %}
+      <div class="mt-24"><button type="submit" class="btn btn-lg">Submit for review</button></div>
+    </form>
+  </div>
 </section>
 {% endblock %}
