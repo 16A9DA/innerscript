@@ -13,7 +13,7 @@
         <span class="muted-sm">{{ profile_user.profile.get_role_display }} · joined {{ profile_user.profile.created|date:"M Y" }}</span>
         {% if profile_user == request.user %}<span class="muted-sm">{{ profile_user.email }}</span>{% endif %}
       </div>
-      {% if user == profile_user %}<label for="edit-toggle" class="btn ml-auto">Edit profile</label>{% endif %}
+      {% if user == profile_user %}<label for="edit-toggle" class="btn ml-auto"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Edit profile</label>{% endif %}
       {% if is_admin and profile_user != user %}<a href="{% url 'accounts:admin_user_delete' profile_user.username %}" class="link-pink ml-16">Delete account</a>{% endif %}
     </div>
     {% if profile_user.profile.bio %}<p>{{ profile_user.profile.bio }}</p>{% endif %}
@@ -41,7 +41,7 @@
         {{ edit_form.role }}
         {{ edit_form.role.errors }}
         <div class="mt-24">
-          <button type="submit" class="btn btn-lg">Save</button>
+          <button type="submit" class="btn btn-lg"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Save</button>
           <label for="edit-toggle" class="btn">Cancel</label>
         </div>
       </form>

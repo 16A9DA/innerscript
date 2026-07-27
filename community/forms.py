@@ -11,6 +11,7 @@ class PostForm(forms.ModelForm):
         fields = ["kind", "category", "title", "body", "image", "is_anonymous"]
         widgets = {
             "is_anonymous": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "kind": forms.RadioSelect,
         }
 
     def clean_image(self):

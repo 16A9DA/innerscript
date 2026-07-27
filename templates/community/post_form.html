@@ -10,7 +10,15 @@
       {% csrf_token %}
       {{ form.non_field_errors }}
       {% for field in form %}
-        {% if field.name == "is_anonymous" %}
+        {% if field.name == "kind" %}
+          <label>{{ field.label }}</label>
+          <div class="kind-group">
+            {% for radio in field %}
+              <label class="kind-btn">{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>
+            {% endfor %}
+          </div>
+          {{ field.errors }}
+        {% elif field.name == "is_anonymous" %}
           <label class="toggle-row">
             <span>{{ field.label }}</span>
             <span class="toggle">{{ field }}<span class="toggle-track"><span class="toggle-thumb"></span></span></span>
@@ -30,7 +38,7 @@
           {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
         {% endif %}
       {% endfor %}
-      <div class="mt-24"><button type="submit" class="btn btn-lg">Publish</button></div>
+      <div class="mt-24"><button type="submit" class="btn btn-lg"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Publish</button></div>
     </form>
   </div>
 </section>
