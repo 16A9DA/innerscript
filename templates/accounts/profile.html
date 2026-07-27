@@ -20,20 +20,32 @@
   </div>
   {% if user == profile_user %}
   <div class="profile-edit-inline form">
-    <form method="post" action="{% url 'accounts:profile_edit' %}" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label>Email</label>
-      <p class="muted-sm mb-8">{{ request.user.email }}</p>
-      {% for field in edit_form %}
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }}
-        {{ field.errors }}
-      {% endfor %}
-      <div class="mt-24">
-        <button type="submit" class="btn btn-lg">Save</button>
-        <label for="edit-toggle" class="btn">Cancel</label>
-      </div>
-    </form>
+    <div class="post-form-card">
+      <form method="post" action="{% url 'accounts:profile_edit' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="{{ edit_form.avatar.id_for_label }}" class="file-drop">
+          <span class="file-drop-fab"><svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span>
+          <span class="file-drop-text">Change avatar</span>
+          {{ edit_form.avatar }}
+        </label>
+        {{ edit_form.avatar.errors }}
+        <label for="{{ edit_form.username.id_for_label }}">{{ edit_form.username.label }}</label>
+        {{ edit_form.username }}
+        {{ edit_form.username.errors }}
+        <label for="profile-email">Email</label>
+        <input type="email" id="profile-email" value="{{ request.user.email }}" disabled>
+        <label for="{{ edit_form.bio.id_for_label }}">{{ edit_form.bio.label }}</label>
+        {{ edit_form.bio }}
+        {{ edit_form.bio.errors }}
+        <label for="{{ edit_form.role.id_for_label }}">{{ edit_form.role.label }}</label>
+        {{ edit_form.role }}
+        {{ edit_form.role.errors }}
+        <div class="mt-24">
+          <button type="submit" class="btn btn-lg">Save</button>
+          <label for="edit-toggle" class="btn">Cancel</label>
+        </div>
+      </form>
+    </div>
   </div>
   {% endif %}
 

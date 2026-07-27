@@ -10,7 +10,7 @@
       {% csrf_token %}
       {{ form.non_field_errors }}
       <label for="{{ form.file.id_for_label }}" class="file-drop">
-        <span class="file-drop-fab"><span class="upload-icon"></span></span>
+        <span class="file-drop-fab"><svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span>
         <span class="file-drop-text">Choose PDF</span>
         {{ form.file }}
       </label>
