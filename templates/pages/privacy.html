@@ -8,20 +8,27 @@
   same care we ask the community to treat each other. This policy describes
   exactly what we collect, and it matches what the code and database actually do.</p>
 
+  <h2>How you sign in</h2>
+  <p>Sign-in runs entirely through WorkOS, using Google as the sign-in method. We
+  never see or store your Google password, and we hold no passwords of our own.
+  WorkOS authenticates you and hands us back a verified email, first name, and
+  last name.</p>
+
   <h2>What we collect</h2>
-  <p>Only two things are required to have an account:</p>
+  <p>From that sign-in response we save only:</p>
   <ul>
-    <li>Your name (or a username you choose).</li>
-    <li>Your email address.</li>
+    <li>Your name.</li>
+    <li>Your email address, and whether it is verified.</li>
   </ul>
-  <p>When you sign in with Google we receive your name and email. We discard
-  everything else Google sends (profile photo, locale, Google ID payload). We do
-  not store Google access or refresh tokens.</p>
+  <p>Everything else Google or WorkOS sends (profile photo, locale, access
+  tokens, session payload) is discarded. Our database keeps your profile,
+  posts, comments, and likes so the app can function, nothing more.</p>
 
   <h2>What we do not collect</h2>
   <ul>
+    <li>No passwords, ever.</li>
     <li>No profile photos or location from Google.</li>
-    <li>No OAuth tokens retained after sign-in.</li>
+    <li>No OAuth or session tokens retained after sign-in.</li>
     <li>No tracking or advertising cookies. No third-party analytics.</li>
     <li>No selling or sharing of personal data with anyone.</li>
   </ul>
@@ -35,13 +42,13 @@
   <ul>
     <li>See your data: it is your profile and your posts, visible to you.</li>
     <li>Delete your account: this permanently removes your account, profile,
-    posts, replies, and Google link, with no soft-delete and no retention.
-    Do it any time from <a href="{% url 'accounts:account_delete' %}" class="link-pink">account deletion</a>.</li>
+    posts, replies, and your WorkOS sign-in link, with no soft-delete and no
+    retention. Do it any time from <a href="{% url 'accounts:account_delete' %}" class="link-pink">account deletion</a>.</li>
   </ul>
 
   <h2>Security and safety</h2>
-  <p>Passwords are hashed, never stored in plain text. Email verification is
-  required for email signups. InnerScript provides educational information and is not a
+  <p>Authentication and credential security are handled by WorkOS and Google,
+  not by us. InnerScript provides educational information and is not a
   substitute for professional care. If you are in crisis, contact a local
   emergency line or a trusted adult immediately.</p>
 

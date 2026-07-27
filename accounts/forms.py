@@ -17,7 +17,10 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ["bio", "avatar", "role"]
-        widgets = {"bio": forms.Textarea(attrs={"rows": 4})}
+        widgets = {
+            "bio": forms.Textarea(attrs={"rows": 4}),
+            "avatar": forms.FileInput(attrs={"accept": "image/*"}),
+        }
         field_order = ["username", "bio", "avatar", "role"]
 
     def __init__(self, *args, **kwargs):

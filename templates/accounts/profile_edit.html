@@ -5,12 +5,24 @@
   <h1 class="h-display mb-24">Edit profile</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <div class="avatar-edit-wrap">
+      <label for="{{ form.avatar.id_for_label }}" class="avatar-edit">
+        <span class="avatar avatar-xl">
+          {% if request.user.profile.avatar %}<img src="{{ request.user.profile.avatar.url }}" alt="">{% else %}{{ request.user.profile.initial }}{% endif %}
+        </span>
+        <span class="avatar-edit-badge"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+        {{ form.avatar }}
+      </label>
+    </div>
+    {{ form.avatar.errors }}
     <label>Email</label>
     <p class="muted-sm mb-20">{{ request.user.email }}</p>
     {% for field in form %}
+      {% if field.name != "avatar" %}
       <label for="{{ field.id_for_label }}">{{ field.label }}</label>
       {{ field }}
       {{ field.errors }}
+      {% endif %}
     {% endfor %}
     <div class="mt-24"><button type="submit" class="btn btn-lg"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Save</button></div>
   </form>

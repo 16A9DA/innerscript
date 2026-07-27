@@ -318,7 +318,14 @@ a .avatar:hover, a:hover .avatar { transform: scale(1.06); }
 .file-drop:hover .file-drop-fab{transform:scale(1.08)}
 .upload-icon{width:22px;height:22px;color:var(--pink);display:block}
 .file-drop-text{font-size:14px;font-weight:700}
-.file-drop input[type=file]{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+.file-drop input[type=file],.avatar-edit input[type=file]{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+.avatar-edit-wrap{display:flex;justify-content:center;margin-bottom:28px}
+.avatar-edit{position:relative;cursor:pointer;display:inline-block}
+.avatar-xl{width:96px;height:96px;font-size:34px}
+.avatar-edit-badge{position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;background:var(--pink);color:var(--on-pink);display:flex;align-items:center;justify-content:center;border:3px solid var(--card);transition:transform .2s var(--ease-spring)}
+.avatar-edit-badge .icon{width:16px;height:16px}
+.avatar-edit:hover .avatar-edit-badge{transform:scale(1.1)}
+.avatar-edit:active .avatar-edit-badge{transform:scale(.92)}
 .tk-manage{margin-top:8px;text-align:right}
 .tk-manage summary{list-style:none;display:inline-block;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border:1.5px solid var(--border);border-radius:var(--r-pill);padding:5px 14px;transition:border-color .2s var(--ease-out),color .2s var(--ease-out),transform .15s var(--ease-spring)}
 .tk-manage summary::-webkit-details-marker{display:none}
@@ -333,12 +340,13 @@ a .avatar:hover, a:hover .avatar { transform: scale(1.06); }
   .card, .featured, .tk, .avatar,
   .btn, .btn-lg, .vis-btn, .tk-manage summary, .chip, .sorts a, .kind-btn,
   .file-drop, .file-drop-fab,
-  .profile-edit-inline {
+  .profile-edit-inline, .avatar-edit-badge {
     transition-duration: .01ms !important;
   }
   .theme-btn:active, .btn:active, .btn-lg:active, .vis-btn:active, .tk-manage summary:active,
   .chip:active, .sorts a:active, .kind-btn:active, a .avatar:hover, a:hover .avatar,
   .card:hover, .card:active, .featured:hover, .tk:hover, .file-drop:hover, .file-drop:hover .file-drop-fab,
+  .avatar-edit:hover .avatar-edit-badge, .avatar-edit:active .avatar-edit-badge,
   .toggle-input:active ~ .toggle-track .toggle-thumb {
     transform: none !important;
   }
