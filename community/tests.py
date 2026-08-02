@@ -15,13 +15,23 @@ class PostDeleteTests(TestCase):
         self.author = User.objects.create_user("author", "author@x.com", "pw")
         self.author.profile.role = "student"
         self.author.profile.save(update_fields=["role"])
+        self.stranger = User.objects.create_user("stranger", "stranger@x.com", "pw")
+        self.stranger.profile.role = "student"
+        self.stranger.profile.save(update_fields=["role"])
         self.post = Post.objects.create(author=self.author, title="X", body="x")
 
-    def test_non_admin_forbidden(self):
-        self.client.force_login(self.author)
+    def test_stranger_forbidden(self):
+        self.client.force_login(self.stranger)
         resp = self.client.post(reverse("community:post_delete", args=[self.post.slug]))
         self.assertEqual(resp.status_code, 403)
         self.assertTrue(Post.objects.filter(pk=self.post.pk).exists())
+
+    def test_owner_deletes(self):
+        self.client.force_login(self.author)
+        resp = self.client.get(reverse("community:post_delete", args=[self.post.slug]))
+        self.assertEqual(resp.status_code, 200)
+        self.client.post(reverse("community:post_delete", args=[self.post.slug]))
+        self.assertFalse(Post.objects.filter(pk=self.post.pk).exists())
 
     def test_admin_deletes(self):
         self.client.force_login(self.admin)
@@ -37,14 +47,24 @@ class CommentDeleteTests(TestCase):
         self.author = User.objects.create_user("author", "author@x.com", "pw")
         self.author.profile.role = "student"
         self.author.profile.save(update_fields=["role"])
+        self.stranger = User.objects.create_user("stranger", "stranger@x.com", "pw")
+        self.stranger.profile.role = "student"
+        self.stranger.profile.save(update_fields=["role"])
         self.post = Post.objects.create(author=self.author, title="X", body="x")
         self.comment = Comment.objects.create(post=self.post, author=self.author, body="hi")
 
-    def test_non_admin_forbidden(self):
-        self.client.force_login(self.author)
+    def test_stranger_forbidden(self):
+        self.client.force_login(self.stranger)
         resp = self.client.post(reverse("community:comment_delete", args=[self.comment.pk]))
         self.assertEqual(resp.status_code, 403)
         self.assertTrue(Comment.objects.filter(pk=self.comment.pk).exists())
+
+    def test_owner_deletes(self):
+        self.client.force_login(self.author)
+        resp = self.client.get(reverse("community:comment_delete", args=[self.comment.pk]))
+        self.assertEqual(resp.status_code, 200)
+        self.client.post(reverse("community:comment_delete", args=[self.comment.pk]))
+        self.assertFalse(Comment.objects.filter(pk=self.comment.pk).exists())
 
     def test_admin_deletes(self):
         self.client.force_login(self.admin)

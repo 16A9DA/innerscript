@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from community.models import Post
-from config.permissions import is_member
+from config.permissions import can_delete_toolkit, is_member
 from .forms import ToolkitForm
 from .models import Toolkit
 
@@ -25,9 +25,15 @@ def initiatives(request):
 
 def toolkits(request):
     member = is_member(request.user)
+    if member:
+        pending = Toolkit.objects.filter(is_approved=False)
+    elif request.user.is_authenticated:
+        pending = Toolkit.objects.filter(is_approved=False, uploaded_by=request.user)
+    else:
+        pending = None
     return render(request, "pages/toolkits.html", {
         "toolkits": Toolkit.objects.filter(is_approved=True),
-        "pending": Toolkit.objects.filter(is_approved=False) if member else None,
+        "pending": pending,
         "can_upload": request.user.is_authenticated,
         "can_moderate": member,
     })
@@ -57,15 +63,16 @@ def toolkit_approve(request, pk):
     return redirect("pages:toolkits")
 
 
-@require_POST
 @login_required
 def toolkit_delete(request, pk):
-    """Member-or-admin. No soft-delete, no retention."""
-    if not is_member(request.user):
-        raise PermissionDenied
+    """Owner or member. No soft-delete, no retention."""
     toolkit = get_object_or_404(Toolkit, pk=pk)
-    toolkit.delete()
-    return redirect("pages:toolkits")
+    if not can_delete_toolkit(request.user, toolkit):
+        raise PermissionDenied
+    if request.method == "POST":
+        toolkit.delete()
+        return redirect("pages:toolkits")
+    return render(request, "pages/toolkit_confirm_delete.html", {"toolkit": toolkit})
 
 
 def impact(request):

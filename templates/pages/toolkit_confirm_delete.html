@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Delete toolkit · InnerScript{% endblock %}
+{% block content %}
+<section class="form wrap">
+  <h1 class="h-display mb-12">Delete this toolkit?</h1>
+  <p class="muted-sm mb-24">"{{ toolkit.title }}" will be permanently removed. This cannot be undone.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-lg bg-pink">Permanently delete toolkit</button>
+    <a href="{% url 'pages:toolkits' %}" class="link-pink ml-16">Cancel</a>
+  </form>
+</section>
+{% endblock %}

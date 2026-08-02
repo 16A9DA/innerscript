@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Delete reply · InnerScript{% endblock %}
+{% block content %}
+<section class="form wrap">
+  <h1 class="h-display mb-12">Delete this reply?</h1>
+  <p class="muted-sm mb-24">This reply by {{ comment.author.username }} will be permanently removed. This cannot be undone.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-lg bg-pink">Permanently delete reply</button>
+    <a href="{{ comment.post.get_absolute_url }}" class="link-pink ml-16">Cancel</a>
+  </form>
+</section>
+{% endblock %}

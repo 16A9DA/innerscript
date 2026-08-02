@@ -8,7 +8,7 @@
     {% if post.category %}<span class="muted-sm">{{ post.category.name }}</span>{% endif %}
     {% if not post.is_public %}<span class="post-hidden">Hidden · only you can see this</span>{% endif %}
     <span class="score ml-auto">Score {{ post.community_score }}</span>
-    {% if is_admin %}<a href="{% url 'community:post_delete' post.slug %}" class="link-pink ml-16">Delete post</a>{% endif %}
+    {% if is_admin or post.author == request.user %}<a href="{% url 'community:post_delete' post.slug %}" class="link-pink ml-16">Delete post</a>{% endif %}
   </div>
 
   <h1>{{ post.title }}</h1>
@@ -61,11 +61,8 @@
       </span>
       <div>
         <div><a href="{% url 'accounts:profile' c.author.username %}" class="fw-600">{{ c.author.username }}</a> <span class="muted-sm">· {{ c.created|timesince }} ago</span>
-          {% if is_admin %}
-          <form method="post" action="{% url 'community:comment_delete' c.pk %}" class="inline-form">
-            {% csrf_token %}
-            <button type="submit" class="link-pink ml-16">Delete</button>
-          </form>
+          {% if is_admin or c.author == request.user %}
+          <a href="{% url 'community:comment_delete' c.pk %}" class="link-pink ml-16">Delete</a>
           {% endif %}
         </div>
         <div class="comment-body">{{ c.body }}</div>

@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
-from config.permissions import is_admin
+from config.permissions import can_delete_comment, can_delete_post, is_admin
 from .forms import CommentForm, PostForm
 from .models import Category, Comment, Like, Post
 
@@ -113,23 +113,24 @@ def visibility_toggle(request, slug):
 
 @login_required
 def post_delete(request, slug):
-    """Admin-only. No soft-delete, no retention."""
-    if not is_admin(request.user):
-        raise PermissionDenied
+    """Owner or admin. No soft-delete, no retention."""
     post = get_object_or_404(Post, slug=slug)
+    if not can_delete_post(request.user, post):
+        raise PermissionDenied
     if request.method == "POST":
         post.delete()
         return redirect("community:feed")
     return render(request, "community/post_confirm_delete.html", {"post": post})
 
 
-@require_POST
 @login_required
 def comment_delete(request, pk):
-    """Admin-only. No soft-delete, no retention."""
-    if not is_admin(request.user):
-        raise PermissionDenied
+    """Owner or admin. No soft-delete, no retention."""
     comment = get_object_or_404(Comment, pk=pk)
+    if not can_delete_comment(request.user, comment):
+        raise PermissionDenied
     post = comment.post
-    comment.delete()
-    return _safe_next(request, post.get_absolute_url())
+    if request.method == "POST":
+        comment.delete()
+        return redirect(post.get_absolute_url())
+    return render(request, "community/comment_confirm_delete.html", {"comment": comment})

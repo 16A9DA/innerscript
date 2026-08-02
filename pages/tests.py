@@ -119,12 +119,20 @@ class ToolkitDeleteTests(TestCase):
         self.regular.profile.role = "student"
         self.regular.profile.save(update_fields=["role"])
         self.toolkit = Toolkit.objects.create(title="Guide", description="x")
+        self.own_toolkit = Toolkit.objects.create(title="Mine", description="x", uploaded_by=self.regular)
 
     def test_non_member_forbidden(self):
         self.client.force_login(self.regular)
         resp = self.client.post(reverse("pages:toolkit_delete", args=[self.toolkit.pk]))
         self.assertEqual(resp.status_code, 403)
         self.assertTrue(Toolkit.objects.filter(pk=self.toolkit.pk).exists())
+
+    def test_owner_deletes(self):
+        self.client.force_login(self.regular)
+        resp = self.client.get(reverse("pages:toolkit_delete", args=[self.own_toolkit.pk]))
+        self.assertEqual(resp.status_code, 200)
+        self.client.post(reverse("pages:toolkit_delete", args=[self.own_toolkit.pk]))
+        self.assertFalse(Toolkit.objects.filter(pk=self.own_toolkit.pk).exists())
 
     def test_member_delete(self):
         self.client.force_login(self.member)
